@@ -1,0 +1,21 @@
+Source: opcuaclient
+Priority: extra
+Maintainer: treww <rykovanov.as@gmail.com>
+Build-Depends: debhelper (>= 8.0.0), autotools-dev
+Standards-Version: 3.9.4
+Section: libs
+Homepage: https://github.com/treww/opcua-client
+Vcs-Git: https://github.com/treww/opcua-client.git
+
+Package: opcuaclient-dev
+Section: libdevel
+Architecture: any
+Depends: opcuaclient (= ${binary:Version}), libopcuacore-dev (= ${binary:Version}), opcuamappings-dev (= ${binary:Version}), libboost-system-dev 
+Description: OPCUA client developer files.
+
+Package: opcuaclient
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libopcuacore (= ${binary:Version}), opcuamappings (= ${binary:Version})
+Description: OPCUA client.
+

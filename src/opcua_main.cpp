@@ -16,6 +16,8 @@
 #include <opc/common/addons_core/config_file.h>
 #include <opc/common/application.h>
 #include <opc/common/uri_facade.h>
+#include <opc/ua/computer.h>
+#include <opc/ua/node_classes.h>
 
 #include <stdexcept>
 
@@ -93,15 +95,16 @@ namespace
     }
   };
 
-  std::string GetNodeClassName(unsigned nodeClass)
+  std::string GetNodeClassName(unsigned cls)
   {
     std::string result;
-    if (nodeClass & NODE_CLASS_OBJECT)
+    NodeClass nodeClass = static_cast<NodeClass>(cls);
+    if (nodeClass == NodeClass::Object)
     {
       result += "object";
     }
 
-    if (nodeClass & NODE_CLASS_VARIABLE)
+    if (nodeClass == NodeClass::Variable)
     {
       if (!result.empty())
       {
@@ -110,7 +113,7 @@ namespace
       result += "variable";
     }
 
-    if (nodeClass & NODE_CLASS_METHOD)
+    if (nodeClass == NodeClass::Method)
     {
       if (!result.empty())
       {
@@ -119,7 +122,7 @@ namespace
       result += "method";
     }
 
-    if (nodeClass & NODE_CLASS_OBJECT_TYPE)
+    if (nodeClass == NodeClass::ObjectType)
     {
       if (!result.empty())
       {
@@ -128,7 +131,7 @@ namespace
       result += "object type";
     }
 
-    if (nodeClass & NODE_CLASS_VARIABLE_TYPE)
+    if (nodeClass == NodeClass::VariableType)
     {
       if (!result.empty())
       {
@@ -137,7 +140,7 @@ namespace
       result += "variable type";
     }
 
-    if (nodeClass & NODE_CLASS_REFERENCE_TYPE)
+    if (nodeClass == NodeClass::ReferenceType)
     {
       if (!result.empty())
       {
@@ -146,7 +149,7 @@ namespace
       result += "reference type";
     }
 
-    if (nodeClass & NODE_CLASS_DATA_TYPE)
+    if (nodeClass == NodeClass::DataType)
     {
       if (!result.empty())
       {
@@ -155,7 +158,7 @@ namespace
       result += "data type";
     }
 
-    if (nodeClass & NODE_CLASS_VIEW)
+    if (nodeClass == NodeClass::View)
     {
       if (!result.empty())
       {

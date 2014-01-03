@@ -9,8 +9,7 @@
 # $Revision: $
 
 
-INCLUDES= -I$(top_srcdir) -Iinclude -I$(top_srcdir)/common/include $(URI_INCLUDES) $(UA_MAPPING_INCLUDES) $(OPC_CORE_INCLUDES) -I/usr/include/libxml2
-TESTINCLUDES = $(GTEST_INCLUDES) $(GMOCK_INCLUDES) $(top_srcdir)/client/tests
+AM_CPPFLAGS= $(CLIENT_CONFIG_PATH) -I$(top_srcdir) -Iinclude $(URI_INCLUDES) $(UA_MAPPING_INCLUDES) $(OPC_CORE_INCLUDES) $(GTEST_INCLUDES) $(GMOCK_INCLUDES) -I$(top_srcdir)/tests -I/usr/include/libxml2
 
 configdir=$(sysconfdir)/opcua
 config_DATA = configs/client.modules
@@ -52,10 +51,7 @@ opcua_SOURCES = \
   src/opcua_options.cpp \
   src/opcua_options.h
 
-opcua_CPPFLAGS = $(INCLUDES) $(CLIENT_CONFIG_PATH)
 opcua_LDFLAGS =  $(UA_MAPPING_LIBS) $(OPC_CORE_LIBS) -ldl -lboost_program_options -lpthread -lxml2
-
-EXTRA_DIST = configs/client.modules
 
 #TESTS = libuaclient_test
 
@@ -73,4 +69,20 @@ EXTRA_DIST = configs/client.modules
 
 #libuaclient_test_CPPFLAGS = $(INCLUDES) $(TESTINCLUDES)
 #libuaclient_test_LDFLAGS = -lpthread -Wl,-z,defs $(UA_MAPPING_LIBS)  $(GTEST_LIB) $(GTEST_MAIN_LIB) $(GMOCK_LIBS) $(URI_LIBS) -no-undefined
+
+EXTRA_DIST = \
+  configs/client.modules \
+  debian make_deb.sh
+
+pkgsharedir = $(libdir)/pkgconfig
+pkgshare_DATA = opcuaclient.pc
+
+pkgconfigdir = $(datarootdir)/pkgconfig
+pkgconfig_DATA = opcuaclient.pc
+
+clean-local:
+	rm -rvf opcuaclient*$(VERSION)*
+
+dist-deb:
+	$(top_srcdir)/make_deb.sh
 

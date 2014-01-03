@@ -6,15 +6,15 @@
 # http://www.gnu.org/licenses/lgpl.html)
 #
 
-AC_INIT
+AC_INIT([opcuaclient], [0.1.2], [rykovanov.as@gmail.com])
 AC_CONFIG_AUX_DIR([.])
 AC_CONFIG_SRCDIR([src/opcua_main.cpp])
-AM_INIT_AUTOMAKE([opcua], [0.1.2], [rykovanov.as@gmail.com])
-LT_INIT([disable-static])
+AM_INIT_AUTOMAKE([-Wall -Werror])
 
-CXXFLAGS="-O0 -g -Wall -std=c++0x"
+CXXFLAGS="-O0 -g -std=c++0x"
 
 AC_PROG_CXX
+AM_PROG_AR
 AC_PROG_LIBTOOL
 
 AC_CONFIG_MACRO_DIR([m4])
@@ -30,6 +30,8 @@ AC_ARG_WITH([gtest],
               AC_MSG_NOTICE([Gtest path: $GTEST_INCLUDES]) 
             ], 
             [ 
+              AC_SUBST([GTEST_LIB], [-lgtest])
+              AC_SUBST([GTEST_MAIN_LIB], [-lgtest_main])
             ])
 
 AC_ARG_WITH([gmock], 
@@ -40,6 +42,7 @@ AC_ARG_WITH([gmock],
               AC_MSG_NOTICE([Gmock path: $GMOCK_INCLUDES]) 
             ], 
             [ 
+              AC_SUBST([GMOCK_LIBS], [-lgmock])
             ])
 
 
@@ -62,7 +65,8 @@ AC_ARG_WITH([libopccore],
               AC_MSG_NOTICE([libopccore path: $with_libopccore]) 
             ], 
             [ 
-              AC_SUBST([OPC_CORE_LIBS], [-lopccore])
+              AC_SUBST([OPC_CORE_INCLUDES], ["-I/usr/include/libxml2"])
+              AC_SUBST([OPC_CORE_LIBS], [-lopcuacore])
             ])
 
 AC_ARG_WITH([testserver-uri], 
@@ -89,6 +93,6 @@ AC_ARG_WITH([config-path],
 AC_CHECK_HEADERS([unistd.h])
 
 #################################################################
-AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([Makefile opcuaclient.pc])
 AC_OUTPUT
 
