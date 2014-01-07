@@ -8,8 +8,7 @@
 # $Date: $
 # $Revision: $
 
-
-AM_CPPFLAGS= $(CLIENT_CONFIG_PATH) -I$(top_srcdir) -Iinclude $(URI_INCLUDES) $(UA_MAPPING_INCLUDES) $(OPC_CORE_INCLUDES) $(GTEST_INCLUDES) $(GMOCK_INCLUDES) -I$(top_srcdir)/tests -I/usr/include/libxml2
+COMMON_INCLUDES= $(CLIENT_CONFIG_PATH) -I$(top_srcdir) -Iinclude $(URI_INCLUDES) $(UAMAPPINGS_INCLUDES) $(OPC_CORE_INCLUDES) $(GTEST_INCLUDES) $(GMOCK_INCLUDES) -I$(top_srcdir)/tests -I/usr/include/libxml2
 
 configdir=$(sysconfdir)/opcua
 config_DATA = configs/client.modules
@@ -42,7 +41,8 @@ libopcua_client_la_SOURCES = \
   src/stream_subscription.h \
   src/stream_view.h
 
-libopcua_client_la_LDFLAGS =  $(UA_MAPPING_LIBS) $(OPC_CORE_LIBS) -ldl -lpthread -lxml2
+libopcua_client_la_CPPFLAGS =  $(COMMON_INCLUDES)
+libopcua_client_la_LDFLAGS =  $(UAMAPPINGS_LIBS) $(OPC_CORE_LIBS) -ldl -lpthread -lxml2
 
 bin_PROGRAMS = opcua
 
@@ -51,7 +51,8 @@ opcua_SOURCES = \
   src/opcua_options.cpp \
   src/opcua_options.h
 
-opcua_LDFLAGS =  $(UA_MAPPING_LIBS) $(OPC_CORE_LIBS) -ldl -lboost_program_options -lpthread -lxml2
+opcua_CPPFLAGS =  $(COMMON_INCLUDES)
+opcua_LDFLAGS =  $(UAMAPPINGS_LIBS) $(OPC_CORE_LIBS) -ldl -lboost_program_options -lpthread -lxml2
 
 #TESTS = libuaclient_test
 
