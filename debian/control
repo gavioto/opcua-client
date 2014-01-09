@@ -16,6 +16,6 @@ Description: OPCUA client developer files.
 Package: opcuaclient
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libopcuacore (>= 0.1.3), opcuamappings (>= 0.2.0) libboost-system
+Depends: ${shlibs:Depends}, ${misc:Depends}, libopcuacore (>= 0.1.3), opcuamappings (>= 0.2.0), libboost-system
 Description: OPCUA client.
 
