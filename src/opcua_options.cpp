@@ -15,7 +15,7 @@
 #include <boost/program_options/variables_map.hpp>
 
 #ifndef CLIENT_CONFIG_PATH
-#define CLIENT_CONFIG_PATH "/etc/opcua/client.modules"
+#define CLIENT_CONFIG_PATH "/etc/opcua/client"
 #endif
 
 namespace
@@ -35,7 +35,7 @@ namespace
 
   const char* OPTION_MODULE_ID = "id";
   const char* OPTION_MODULE_PATH = "path";
-  const char* OPTION_CONFIG_FILE = "config-file";
+  const char* OPTION_CONFIG_DIR = "config-dir";
 
   const char* OPTION_SERVER_URI = "uri";
   const char* OPTION_NAMESPACE_INDEX = "namespace-index";
@@ -263,7 +263,7 @@ namespace OpcUa
       (OPTION_VALUE_STRING, po::value<std::string>(), "String value.")
       (OPTION_MODULE_ID, po::value<std::string>(), "ID of the new module.")
       (OPTION_MODULE_PATH, po::value<std::string>(), "Path to the new module shared library.")
-      (OPTION_CONFIG_FILE, po::value<std::string>(), "Path to the modules configuration file. By default '" CLIENT_CONFIG_PATH "'.");
+      (OPTION_CONFIG_DIR, po::value<std::string>(), "Path to the directory with modules configuration files. By default '" CLIENT_CONFIG_PATH "'.");
 
 
     po::variables_map vm;
@@ -307,13 +307,13 @@ namespace OpcUa
       ModuleID = vm[OPTION_MODULE_ID].as<std::string>();
     }
 
-    if (vm.count(OPTION_CONFIG_FILE))
+    if (vm.count(OPTION_CONFIG_DIR))
     {
-      ConfigFile = vm[OPTION_CONFIG_FILE].as<std::string>();
+      ConfigDir = vm[OPTION_CONFIG_DIR].as<std::string>();
     }
     else
     {
-      ConfigFile = CLIENT_CONFIG_PATH;
+      ConfigDir = CLIENT_CONFIG_PATH;
     }
   }
 }

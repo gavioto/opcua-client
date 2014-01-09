@@ -626,7 +626,7 @@ namespace
   int RegisterNewModule(const OpcUa::CommandLine& cmd)
   {
     std::cout << "Registering new module." << std::endl;
-    const std::string& configFile = cmd.GetConfigFile();
+    const std::string& configFile = cmd.GetConfigDir();
     const std::string& addonID = cmd.GetModuleID();
     const std::string& modulePath = cmd.GetModulePath();
 
@@ -655,7 +655,7 @@ namespace
   int UnregisterModule(const OpcUa::CommandLine& cmd)
   {
     const Common::AddonID addonID = cmd.GetModuleID();
-    const std::string& configFile = cmd.GetConfigFile();
+    const std::string& configFile = cmd.GetConfigDir();
     std::cout << "Unregistering module." << std::endl;
     std::cout << "ID: " << addonID << std::endl;
     std::cout << "Configuration file: " << configFile << std::endl;
@@ -695,8 +695,8 @@ int main(int argc, char** argv)
       return UnregisterModule(cmd);
     }
 
-    const std::string configFile = cmd.GetConfigFile();
-    const Common::ModulesConfiguration& modules = Common::ParseConfiguration(configFile);
+    const std::string configDir = cmd.GetConfigDir();
+    const Common::ModulesConfiguration& modules = Common::ParseConfigurationFiles(configDir);
 
     OpcUa::Application::UniquePtr application = OpcUa::CreateApplication();
     std::vector<Common::AddonInformation> infos(modules.size());

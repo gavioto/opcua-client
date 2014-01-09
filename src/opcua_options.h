@@ -58,9 +58,9 @@ namespace OpcUa
       return ModulePath;
     }
 
-    std::string GetConfigFile() const
+    std::string GetConfigDir() const
     {
-      return ConfigFile;
+      return ConfigDir;
     }
 
     bool IsGetEndpointsOperation() const
@@ -116,7 +116,7 @@ namespace OpcUa
     AttributeID Attribute;
     std::string ModuleID;
     std::string ModulePath;
-    std::string ConfigFile;
+    std::string ConfigDir;
 
     bool IsHelp;
     bool IsGetEndpoints;

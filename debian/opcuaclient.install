@@ -1,4 +1,4 @@
-etc/opcua/client.modules
+etc/opcua/client/opc_tcp.conf
 usr/bin/opcua
 usr/lib/lib*.a
 usr/lib/lib*.so*

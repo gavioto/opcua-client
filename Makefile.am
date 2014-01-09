@@ -11,7 +11,8 @@
 COMMON_INCLUDES= $(CLIENT_CONFIG_PATH) -I$(top_srcdir) -Iinclude $(URI_INCLUDES) $(UAMAPPINGS_INCLUDES) $(OPC_CORE_INCLUDES) $(GTEST_INCLUDES) $(GMOCK_INCLUDES) -I$(top_srcdir)/tests -I/usr/include/libxml2
 
 configdir=$(sysconfdir)/opcua
-config_DATA = configs/client.modules
+clientconfigdir=${configdir}/client
+clientconfig_DATA = configs/opc_tcp.conf
 
 opcincludedir = $(includedir)/opc
 opcuaincludedir = $(opcincludedir)/ua
@@ -28,8 +29,8 @@ uaclientinclude_HEADERS = \
 binaryinclude_HEADERS = \
   include/opc/ua/protocol/binary/secure_connection.h
 
-lib_LTLIBRARIES = libopcua_client.la
-libopcua_client_la_SOURCES = \
+lib_LTLIBRARIES = libopc_tcp_client.la
+libopc_tcp_client_la_SOURCES = \
   src/computer.cpp \
   src/binary_computer_addon.cpp \
   src/binary_computer.cpp \
@@ -41,8 +42,8 @@ libopcua_client_la_SOURCES = \
   src/stream_subscription.h \
   src/stream_view.h
 
-libopcua_client_la_CPPFLAGS =  $(COMMON_INCLUDES)
-libopcua_client_la_LDFLAGS =  $(UAMAPPINGS_LIBS) $(OPC_CORE_LIBS) -ldl -lpthread -lxml2
+libopc_tcp_client_la_CPPFLAGS =  $(COMMON_INCLUDES)
+libopc_tcp_client_la_LDFLAGS =  $(UAMAPPINGS_LIBS) $(OPC_CORE_LIBS) -ldl -lpthread -lxml2
 
 bin_PROGRAMS = opcua
 
@@ -72,7 +73,7 @@ opcua_LDFLAGS =  $(UAMAPPINGS_LIBS) $(OPC_CORE_LIBS) -ldl -lboost_program_option
 #libuaclient_test_LDFLAGS = -lpthread -Wl,-z,defs $(UA_MAPPING_LIBS)  $(GTEST_LIB) $(GTEST_MAIN_LIB) $(GMOCK_LIBS) $(URI_LIBS) -no-undefined
 
 EXTRA_DIST = \
-  configs/client.modules \
+  configs/opc_tcp.conf \
   debian make_deb.sh
 
 pkgsharedir = $(libdir)/pkgconfig
@@ -84,6 +85,6 @@ pkgconfig_DATA = opcuaclient.pc
 clean-local:
 	rm -rvf opcuaclient*$(VERSION)*
 
-dist-deb:
-	$(top_srcdir)/make_deb.sh
+dist-deb: dist
+	VERSION=$(VERSION) $(top_srcdir)/make_deb.sh
 

@@ -6,7 +6,7 @@
 # http://www.gnu.org/licenses/lgpl.html)
 #
 
-AC_INIT([opcuaclient], [0.1.2], [rykovanov.as@gmail.com])
+AC_INIT([opcuaclient], [0.1.3], [rykovanov.as@gmail.com])
 AC_CONFIG_AUX_DIR([.])
 AC_CONFIG_SRCDIR([src/opcua_main.cpp])
 AM_INIT_AUTOMAKE([-Wall -Werror])
@@ -89,10 +89,12 @@ AC_ARG_WITH([config-path],
               AC_SUBST([CLIENT_CONFIG_PATH], ["-DCLIENT_CONFIG_PATH=\"\\\"$sysconfdir/opcua/client.modules\\\"\""])
             ])
 
+AC_SUBST([RELEASE_DATE], [$(date -R)])
+
 #check headers
 AC_CHECK_HEADERS([unistd.h])
 
 #################################################################
-AC_CONFIG_FILES([Makefile opcuaclient.pc])
+AC_CONFIG_FILES([Makefile opcuaclient.pc debian/changelog])
 AC_OUTPUT
 

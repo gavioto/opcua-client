@@ -69,9 +69,10 @@ subdir = .
 DIST_COMMON = README $(am__configure_deps) $(binaryinclude_HEADERS) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/config.h.in $(srcdir)/opcuaclient.pc.in \
-	$(top_srcdir)/configure $(uaclientinclude_HEADERS) AUTHORS \
-	COPYING ChangeLog INSTALL NEWS ar-lib config.guess config.sub \
-	depcomp install-sh ltmain.sh missing
+	$(top_srcdir)/configure $(top_srcdir)/debian/changelog.in \
+	$(uaclientinclude_HEADERS) AUTHORS COPYING ChangeLog INSTALL \
+	NEWS ar-lib config.guess config.sub depcomp install-sh \
+	ltmain.sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -80,7 +81,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
-CONFIG_CLEAN_FILES = opcuaclient.pc
+CONFIG_CLEAN_FILES = opcuaclient.pc debian/changelog
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -110,20 +111,20 @@ am__uninstall_files_from_dir = { \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
-	"$(DESTDIR)$(configdir)" "$(DESTDIR)$(pkgconfigdir)" \
+	"$(DESTDIR)$(clientconfigdir)" "$(DESTDIR)$(pkgconfigdir)" \
 	"$(DESTDIR)$(pkgsharedir)" "$(DESTDIR)$(binaryincludedir)" \
 	"$(DESTDIR)$(uaclientincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-libopcua_client_la_LIBADD =
-am_libopcua_client_la_OBJECTS = libopcua_client_la-computer.lo \
-	libopcua_client_la-binary_computer_addon.lo \
-	libopcua_client_la-binary_computer.lo \
-	libopcua_client_la-binary_connection.lo \
-	libopcua_client_la-binary_secure_channel.lo
-libopcua_client_la_OBJECTS = $(am_libopcua_client_la_OBJECTS)
-libopcua_client_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+libopc_tcp_client_la_LIBADD =
+am_libopc_tcp_client_la_OBJECTS = libopc_tcp_client_la-computer.lo \
+	libopc_tcp_client_la-binary_computer_addon.lo \
+	libopc_tcp_client_la-binary_computer.lo \
+	libopc_tcp_client_la-binary_connection.lo \
+	libopc_tcp_client_la-binary_secure_channel.lo
+libopc_tcp_client_la_OBJECTS = $(am_libopc_tcp_client_la_OBJECTS)
+libopc_tcp_client_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
-	$(CXXFLAGS) $(libopcua_client_la_LDFLAGS) $(LDFLAGS) -o $@
+	$(CXXFLAGS) $(libopc_tcp_client_la_LDFLAGS) $(LDFLAGS) -o $@
 PROGRAMS = $(bin_PROGRAMS)
 am_opcua_OBJECTS = opcua-opcua_main.$(OBJEXT) \
 	opcua-opcua_options.$(OBJEXT)
@@ -154,14 +155,14 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libopcua_client_la_SOURCES) $(opcua_SOURCES)
-DIST_SOURCES = $(libopcua_client_la_SOURCES) $(opcua_SOURCES)
+SOURCES = $(libopc_tcp_client_la_SOURCES) $(opcua_SOURCES)
+DIST_SOURCES = $(libopc_tcp_client_la_SOURCES) $(opcua_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
-DATA = $(config_DATA) $(pkgconfig_DATA) $(pkgshare_DATA)
+DATA = $(clientconfig_DATA) $(pkgconfig_DATA) $(pkgshare_DATA)
 HEADERS = $(binaryinclude_HEADERS) $(uaclientinclude_HEADERS)
 ETAGS = etags
 CTAGS = ctags
@@ -248,6 +249,7 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 RANLIB = @RANLIB@
+RELEASE_DATE = @RELEASE_DATE@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
@@ -312,7 +314,8 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 COMMON_INCLUDES = $(CLIENT_CONFIG_PATH) -I$(top_srcdir) -Iinclude $(URI_INCLUDES) $(UAMAPPINGS_INCLUDES) $(OPC_CORE_INCLUDES) $(GTEST_INCLUDES) $(GMOCK_INCLUDES) -I$(top_srcdir)/tests -I/usr/include/libxml2
 configdir = $(sysconfdir)/opcua
-config_DATA = configs/client.modules
+clientconfigdir = ${configdir}/client
+clientconfig_DATA = configs/opc_tcp.conf
 opcincludedir = $(includedir)/opc
 opcuaincludedir = $(opcincludedir)/ua
 protocolincludedir = $(opcuaincludedir)/protocol
@@ -327,8 +330,8 @@ uaclientinclude_HEADERS = \
 binaryinclude_HEADERS = \
   include/opc/ua/protocol/binary/secure_connection.h
 
-lib_LTLIBRARIES = libopcua_client.la
-libopcua_client_la_SOURCES = \
+lib_LTLIBRARIES = libopc_tcp_client.la
+libopc_tcp_client_la_SOURCES = \
   src/computer.cpp \
   src/binary_computer_addon.cpp \
   src/binary_computer.cpp \
@@ -340,8 +343,8 @@ libopcua_client_la_SOURCES = \
   src/stream_subscription.h \
   src/stream_view.h
 
-libopcua_client_la_CPPFLAGS = $(COMMON_INCLUDES)
-libopcua_client_la_LDFLAGS = $(UAMAPPINGS_LIBS) $(OPC_CORE_LIBS) -ldl -lpthread -lxml2
+libopc_tcp_client_la_CPPFLAGS = $(COMMON_INCLUDES)
+libopc_tcp_client_la_LDFLAGS = $(UAMAPPINGS_LIBS) $(OPC_CORE_LIBS) -ldl -lpthread -lxml2
 opcua_SOURCES = \
   src/opcua_main.cpp \
   src/opcua_options.cpp \
@@ -367,7 +370,7 @@ opcua_LDFLAGS = $(UAMAPPINGS_LIBS) $(OPC_CORE_LIBS) -ldl -lboost_program_options
 #libuaclient_test_CPPFLAGS = $(INCLUDES) $(TESTINCLUDES)
 #libuaclient_test_LDFLAGS = -lpthread -Wl,-z,defs $(UA_MAPPING_LIBS)  $(GTEST_LIB) $(GTEST_MAIN_LIB) $(GMOCK_LIBS) $(URI_LIBS) -no-undefined
 EXTRA_DIST = \
-  configs/client.modules \
+  configs/opc_tcp.conf \
   debian make_deb.sh
 
 pkgsharedir = $(libdir)/pkgconfig
@@ -430,6 +433,8 @@ distclean-hdr:
 	-rm -f config.h stamp-h1
 opcuaclient.pc: $(top_builddir)/config.status $(srcdir)/opcuaclient.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
+debian/changelog: $(top_builddir)/config.status $(top_srcdir)/debian/changelog.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
@@ -462,8 +467,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libopcua_client.la: $(libopcua_client_la_OBJECTS) $(libopcua_client_la_DEPENDENCIES) $(EXTRA_libopcua_client_la_DEPENDENCIES) 
-	$(libopcua_client_la_LINK) -rpath $(libdir) $(libopcua_client_la_OBJECTS) $(libopcua_client_la_LIBADD) $(LIBS)
+libopc_tcp_client.la: $(libopc_tcp_client_la_OBJECTS) $(libopc_tcp_client_la_DEPENDENCIES) $(EXTRA_libopc_tcp_client_la_DEPENDENCIES) 
+	$(libopc_tcp_client_la_LINK) -rpath $(libdir) $(libopc_tcp_client_la_OBJECTS) $(libopc_tcp_client_la_LIBADD) $(LIBS)
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	@list='$(bin_PROGRAMS)'; test -n "$(bindir)" || list=; \
@@ -520,11 +525,11 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopcua_client_la-binary_computer.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopcua_client_la-binary_computer_addon.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopcua_client_la-binary_connection.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopcua_client_la-binary_secure_channel.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopcua_client_la-computer.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopc_tcp_client_la-binary_computer.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopc_tcp_client_la-binary_computer_addon.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopc_tcp_client_la-binary_connection.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopc_tcp_client_la-binary_secure_channel.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopc_tcp_client_la-computer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/opcua-opcua_main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/opcua-opcua_options.Po@am__quote@
 
@@ -549,40 +554,40 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
 
-libopcua_client_la-computer.lo: src/computer.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopcua_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libopcua_client_la-computer.lo -MD -MP -MF $(DEPDIR)/libopcua_client_la-computer.Tpo -c -o libopcua_client_la-computer.lo `test -f 'src/computer.cpp' || echo '$(srcdir)/'`src/computer.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libopcua_client_la-computer.Tpo $(DEPDIR)/libopcua_client_la-computer.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/computer.cpp' object='libopcua_client_la-computer.lo' libtool=yes @AMDEPBACKSLASH@
+libopc_tcp_client_la-computer.lo: src/computer.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopc_tcp_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libopc_tcp_client_la-computer.lo -MD -MP -MF $(DEPDIR)/libopc_tcp_client_la-computer.Tpo -c -o libopc_tcp_client_la-computer.lo `test -f 'src/computer.cpp' || echo '$(srcdir)/'`src/computer.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libopc_tcp_client_la-computer.Tpo $(DEPDIR)/libopc_tcp_client_la-computer.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/computer.cpp' object='libopc_tcp_client_la-computer.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopcua_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libopcua_client_la-computer.lo `test -f 'src/computer.cpp' || echo '$(srcdir)/'`src/computer.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopc_tcp_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libopc_tcp_client_la-computer.lo `test -f 'src/computer.cpp' || echo '$(srcdir)/'`src/computer.cpp
 
-libopcua_client_la-binary_computer_addon.lo: src/binary_computer_addon.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopcua_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libopcua_client_la-binary_computer_addon.lo -MD -MP -MF $(DEPDIR)/libopcua_client_la-binary_computer_addon.Tpo -c -o libopcua_client_la-binary_computer_addon.lo `test -f 'src/binary_computer_addon.cpp' || echo '$(srcdir)/'`src/binary_computer_addon.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libopcua_client_la-binary_computer_addon.Tpo $(DEPDIR)/libopcua_client_la-binary_computer_addon.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/binary_computer_addon.cpp' object='libopcua_client_la-binary_computer_addon.lo' libtool=yes @AMDEPBACKSLASH@
+libopc_tcp_client_la-binary_computer_addon.lo: src/binary_computer_addon.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopc_tcp_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libopc_tcp_client_la-binary_computer_addon.lo -MD -MP -MF $(DEPDIR)/libopc_tcp_client_la-binary_computer_addon.Tpo -c -o libopc_tcp_client_la-binary_computer_addon.lo `test -f 'src/binary_computer_addon.cpp' || echo '$(srcdir)/'`src/binary_computer_addon.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libopc_tcp_client_la-binary_computer_addon.Tpo $(DEPDIR)/libopc_tcp_client_la-binary_computer_addon.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/binary_computer_addon.cpp' object='libopc_tcp_client_la-binary_computer_addon.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopcua_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libopcua_client_la-binary_computer_addon.lo `test -f 'src/binary_computer_addon.cpp' || echo '$(srcdir)/'`src/binary_computer_addon.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopc_tcp_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libopc_tcp_client_la-binary_computer_addon.lo `test -f 'src/binary_computer_addon.cpp' || echo '$(srcdir)/'`src/binary_computer_addon.cpp
 
-libopcua_client_la-binary_computer.lo: src/binary_computer.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopcua_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libopcua_client_la-binary_computer.lo -MD -MP -MF $(DEPDIR)/libopcua_client_la-binary_computer.Tpo -c -o libopcua_client_la-binary_computer.lo `test -f 'src/binary_computer.cpp' || echo '$(srcdir)/'`src/binary_computer.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libopcua_client_la-binary_computer.Tpo $(DEPDIR)/libopcua_client_la-binary_computer.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/binary_computer.cpp' object='libopcua_client_la-binary_computer.lo' libtool=yes @AMDEPBACKSLASH@
+libopc_tcp_client_la-binary_computer.lo: src/binary_computer.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopc_tcp_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libopc_tcp_client_la-binary_computer.lo -MD -MP -MF $(DEPDIR)/libopc_tcp_client_la-binary_computer.Tpo -c -o libopc_tcp_client_la-binary_computer.lo `test -f 'src/binary_computer.cpp' || echo '$(srcdir)/'`src/binary_computer.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libopc_tcp_client_la-binary_computer.Tpo $(DEPDIR)/libopc_tcp_client_la-binary_computer.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/binary_computer.cpp' object='libopc_tcp_client_la-binary_computer.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopcua_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libopcua_client_la-binary_computer.lo `test -f 'src/binary_computer.cpp' || echo '$(srcdir)/'`src/binary_computer.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopc_tcp_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libopc_tcp_client_la-binary_computer.lo `test -f 'src/binary_computer.cpp' || echo '$(srcdir)/'`src/binary_computer.cpp
 
-libopcua_client_la-binary_connection.lo: src/binary_connection.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopcua_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libopcua_client_la-binary_connection.lo -MD -MP -MF $(DEPDIR)/libopcua_client_la-binary_connection.Tpo -c -o libopcua_client_la-binary_connection.lo `test -f 'src/binary_connection.cpp' || echo '$(srcdir)/'`src/binary_connection.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libopcua_client_la-binary_connection.Tpo $(DEPDIR)/libopcua_client_la-binary_connection.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/binary_connection.cpp' object='libopcua_client_la-binary_connection.lo' libtool=yes @AMDEPBACKSLASH@
+libopc_tcp_client_la-binary_connection.lo: src/binary_connection.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopc_tcp_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libopc_tcp_client_la-binary_connection.lo -MD -MP -MF $(DEPDIR)/libopc_tcp_client_la-binary_connection.Tpo -c -o libopc_tcp_client_la-binary_connection.lo `test -f 'src/binary_connection.cpp' || echo '$(srcdir)/'`src/binary_connection.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libopc_tcp_client_la-binary_connection.Tpo $(DEPDIR)/libopc_tcp_client_la-binary_connection.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/binary_connection.cpp' object='libopc_tcp_client_la-binary_connection.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopcua_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libopcua_client_la-binary_connection.lo `test -f 'src/binary_connection.cpp' || echo '$(srcdir)/'`src/binary_connection.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopc_tcp_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libopc_tcp_client_la-binary_connection.lo `test -f 'src/binary_connection.cpp' || echo '$(srcdir)/'`src/binary_connection.cpp
 
-libopcua_client_la-binary_secure_channel.lo: src/binary_secure_channel.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopcua_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libopcua_client_la-binary_secure_channel.lo -MD -MP -MF $(DEPDIR)/libopcua_client_la-binary_secure_channel.Tpo -c -o libopcua_client_la-binary_secure_channel.lo `test -f 'src/binary_secure_channel.cpp' || echo '$(srcdir)/'`src/binary_secure_channel.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libopcua_client_la-binary_secure_channel.Tpo $(DEPDIR)/libopcua_client_la-binary_secure_channel.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/binary_secure_channel.cpp' object='libopcua_client_la-binary_secure_channel.lo' libtool=yes @AMDEPBACKSLASH@
+libopc_tcp_client_la-binary_secure_channel.lo: src/binary_secure_channel.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopc_tcp_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libopc_tcp_client_la-binary_secure_channel.lo -MD -MP -MF $(DEPDIR)/libopc_tcp_client_la-binary_secure_channel.Tpo -c -o libopc_tcp_client_la-binary_secure_channel.lo `test -f 'src/binary_secure_channel.cpp' || echo '$(srcdir)/'`src/binary_secure_channel.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libopc_tcp_client_la-binary_secure_channel.Tpo $(DEPDIR)/libopc_tcp_client_la-binary_secure_channel.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/binary_secure_channel.cpp' object='libopc_tcp_client_la-binary_secure_channel.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopcua_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libopcua_client_la-binary_secure_channel.lo `test -f 'src/binary_secure_channel.cpp' || echo '$(srcdir)/'`src/binary_secure_channel.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopc_tcp_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libopc_tcp_client_la-binary_secure_channel.lo `test -f 'src/binary_secure_channel.cpp' || echo '$(srcdir)/'`src/binary_secure_channel.cpp
 
 opcua-opcua_main.o: src/opcua_main.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(opcua_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT opcua-opcua_main.o -MD -MP -MF $(DEPDIR)/opcua-opcua_main.Tpo -c -o opcua-opcua_main.o `test -f 'src/opcua_main.cpp' || echo '$(srcdir)/'`src/opcua_main.cpp
@@ -620,27 +625,27 @@ clean-libtool:
 
 distclean-libtool:
 	-rm -f libtool config.lt
-install-configDATA: $(config_DATA)
+install-clientconfigDATA: $(clientconfig_DATA)
 	@$(NORMAL_INSTALL)
-	@list='$(config_DATA)'; test -n "$(configdir)" || list=; \
+	@list='$(clientconfig_DATA)'; test -n "$(clientconfigdir)" || list=; \
 	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(configdir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(configdir)" || exit 1; \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(clientconfigdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(clientconfigdir)" || exit 1; \
 	fi; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(configdir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(configdir)" || exit $$?; \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(clientconfigdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(clientconfigdir)" || exit $$?; \
 	done
 
-uninstall-configDATA:
+uninstall-clientconfigDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(config_DATA)'; test -n "$(configdir)" || list=; \
+	@list='$(clientconfig_DATA)'; test -n "$(clientconfigdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(configdir)'; $(am__uninstall_files_from_dir)
+	dir='$(DESTDIR)$(clientconfigdir)'; $(am__uninstall_files_from_dir)
 install-pkgconfigDATA: $(pkgconfig_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(pkgconfig_DATA)'; test -n "$(pkgconfigdir)" || list=; \
@@ -947,7 +952,7 @@ all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(DATA) $(HEADERS) \
 install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(configdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(pkgsharedir)" "$(DESTDIR)$(binaryincludedir)" "$(DESTDIR)$(uaclientincludedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(clientconfigdir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(pkgsharedir)" "$(DESTDIR)$(binaryincludedir)" "$(DESTDIR)$(uaclientincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -1004,7 +1009,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-binaryincludeHEADERS install-configDATA \
+install-data-am: install-binaryincludeHEADERS install-clientconfigDATA \
 	install-pkgconfigDATA install-pkgshareDATA \
 	install-uaclientincludeHEADERS
 
@@ -1055,7 +1060,7 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-binPROGRAMS uninstall-binaryincludeHEADERS \
-	uninstall-configDATA uninstall-libLTLIBRARIES \
+	uninstall-clientconfigDATA uninstall-libLTLIBRARIES \
 	uninstall-pkgconfigDATA uninstall-pkgshareDATA \
 	uninstall-uaclientincludeHEADERS
 
@@ -1070,9 +1075,9 @@ uninstall-am: uninstall-binPROGRAMS uninstall-binaryincludeHEADERS \
 	distclean-tags distcleancheck distdir distuninstallcheck dvi \
 	dvi-am html html-am info info-am install install-am \
 	install-binPROGRAMS install-binaryincludeHEADERS \
-	install-configDATA install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am \
+	install-clientconfigDATA install-data install-data-am \
+	install-dvi install-dvi-am install-exec install-exec-am \
+	install-html install-html-am install-info install-info-am \
 	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
 	install-pkgconfigDATA install-pkgshareDATA install-ps \
 	install-ps-am install-strip install-uaclientincludeHEADERS \
@@ -1080,7 +1085,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-binaryincludeHEADERS \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am uninstall-binPROGRAMS \
-	uninstall-binaryincludeHEADERS uninstall-configDATA \
+	uninstall-binaryincludeHEADERS uninstall-clientconfigDATA \
 	uninstall-libLTLIBRARIES uninstall-pkgconfigDATA \
 	uninstall-pkgshareDATA uninstall-uaclientincludeHEADERS
 
@@ -1088,8 +1093,8 @@ uninstall-am: uninstall-binPROGRAMS uninstall-binaryincludeHEADERS \
 clean-local:
 	rm -rvf opcuaclient*$(VERSION)*
 
-dist-deb:
-	$(top_srcdir)/make_deb.sh
+dist-deb: dist
+	VERSION=$(VERSION) $(top_srcdir)/make_deb.sh
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
