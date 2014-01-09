@@ -10,12 +10,12 @@ Vcs-Git: https://github.com/treww/opcua-client.git
 Package: opcuaclient-dev
 Section: libdevel
 Architecture: any
-Depends: opcuaclient (= ${binary:Version}), libopcuacore-dev (= ${binary:Version}), opcuamappings-dev (= ${binary:Version}), libboost-system-dev 
+Depends: opcuaclient (= ${binary:Version}), libopcuacore-dev (>= 0.1.3), opcuamappings-dev (>= 0.2.0), libboost-system-dev 
 Description: OPCUA client developer files.
 
 Package: opcuaclient
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libopcuacore (= ${binary:Version}), opcuamappings (= ${binary:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, libopcuacore (>= 0.1.3), opcuamappings (>= 0.2.0) libboost-system
 Description: OPCUA client.
 
