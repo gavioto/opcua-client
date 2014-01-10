@@ -9,13 +9,13 @@ Vcs-Git: https://github.com/treww/opcua-client.git
 
 Package: opcuaclient-dev
 Section: libdevel
-Architecture: any
-Depends: opcuaclient (= ${binary:Version}), libopcuacore-dev (>= 0.1.3), opcuamappings-dev (>= 0.2.0), libboost-system-dev 
+Architecture: amd64 i386
+Depends: opcuaclient (= ${binary:Version}), libopcuacore-dev (>= 0.1.3), opcuamappings-dev (>= 0.2.0), libboost-system-dev
 Description: OPCUA client developer files.
 
 Package: opcuaclient
 Section: libs
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libopcuacore (>= 0.1.3), opcuamappings (>= 0.2.0), libboost-system
+Architecture: amd64 i386
+Depends: ${shlibs:Depends}, ${misc:Depends}, libopcuacore (>= 0.1.3), opcuamappings (>= 0.2.0)
 Description: OPCUA client.
 
