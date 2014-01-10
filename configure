@@ -15293,7 +15293,7 @@ $as_echo "$as_me: Modules configuration file: $CLIENT_CONFIG_PATH" >&6;}
 
 else
 
-              CLIENT_CONFIG_PATH="-DCLIENT_CONFIG_PATH=\"\\\"$sysconfdir/opcua/client.modules\\\"\""
+              CLIENT_CONFIG_PATH="-DCLIENT_CONFIG_PATH=\"\\\"$sysconfdir/opcua/client\\\"\""
 
 
 fi

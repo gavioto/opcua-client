@@ -86,7 +86,7 @@ AC_ARG_WITH([config-path],
               AC_MSG_NOTICE([Modules configuration file: $CLIENT_CONFIG_PATH]) 
             ], 
             [ 
-              AC_SUBST([CLIENT_CONFIG_PATH], ["-DCLIENT_CONFIG_PATH=\"\\\"$sysconfdir/opcua/client.modules\\\"\""])
+              AC_SUBST([CLIENT_CONFIG_PATH], ["-DCLIENT_CONFIG_PATH=\"\\\"$sysconfdir/opcua/client\\\"\""])
             ])
 
 AC_SUBST([RELEASE_DATE], [$(date -R)])
