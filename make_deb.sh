@@ -2,5 +2,5 @@
 tar -xvf opcuaclient-${VERSION}.tar.gz
 cd opcuaclient-${VERSION}
 dh_make -y -l -c lgpl3 -e rykovanov.as@gmail.com -f ../opcuaclient-${VERSION}.tar.gz
-dpkg-buildpackage -rfakeroot -nc -F
+dpkg-buildpackage -rfakeroot -nc -F ${DPKG_BUILDPACKAGE_OPTS}
 
