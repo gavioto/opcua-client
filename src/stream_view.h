@@ -31,6 +31,21 @@ namespace OpcUa
       {
       }
 
+      virtual std::vector<BrowsePathResult> TranslateBrowsePathToNodeIds(TranslateBrowsePathsParameters params) const
+      {
+        TranslateBrowsePathsToNodeIDsRequest request;
+        request.Header.SessionAuthenticationToken = AuthenticationToken;
+        request.Parameters = params;
+
+        Stream << request << OpcUa::Binary::flush;
+        
+        TranslateBrowsePathsToNodeIDsResponse response;
+        Stream >> response;
+
+        return response.Result.Paths;
+      }
+
+
       virtual std::vector<ReferenceDescription> Browse(const OpcUa::NodesQuery& query) const
       {
         BrowseRequest browse;
