@@ -22,15 +22,9 @@
 
 
 
-#include <opc/ua/client/addon.h>
-#include <opc/ua/channel.h>
-#include <opc/ua/computer.h>
 #include <opc/common/application.h>
 #include <opc/common/node.h>
-#include <opc/common/addons_core/addon_manager.h>
 
-#include <opc/ua/protocol/binary/stream.h>
-#include <opc/ua/protocol/session.h>
 
 namespace OpcUa
 {
@@ -45,7 +39,6 @@ namespace OpcUa
             //~Client(){disconnect();}
 
             void connect( const std::string &endpoint ); 
-            //bool connect( const char[] ); 
             void createSession(); 
             void disconnect(); 
 

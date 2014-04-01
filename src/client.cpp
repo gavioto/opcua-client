@@ -26,10 +26,7 @@
 #include <opc/common/node.h>
 #include <opc/common/uri_facade.h>
 #include <opc/ua/computer.h>
-#include <opc/ua/node_classes.h>
 
-#include <stdexcept>
-#include <iostream>
 
 
 
@@ -54,7 +51,6 @@ namespace OpcUa
             moduleConfig.Path = "libopc_tcp_client.so";
             configuration.push_back(moduleConfig);
             //Now start application
-            std::cout << "Starting application" << std::endl;
             application = OpcUa::CreateApplication();
             std::vector<Common::AddonInformation> infos(configuration.size()); 
             std::transform(configuration.begin(), configuration.end(), infos.begin(), std::bind(&Common::GetAddonInfomation, std::placeholders::_1));
@@ -62,10 +58,8 @@ namespace OpcUa
 
 
             const Common::Uri uri(endpoint);
-            std::cout << "getting addon client: " << uri.Scheme() << std::endl;
             const OpcUa::Client::Addon::SharedPtr addon = application->GetAddonsManager().GetAddon<OpcUa::Client::Addon>(uri.Scheme());
             //std::shared_ptr<OpcUa::Client::Addon> addon = application->GetAddonsManager().GetAddon<OpcUa::Client::Addon>(uri.Scheme());
-            std::cout << "Connecting" << std::endl;
             this->server = addon->Connect(endpoint);
 
             OpcUa::Remote::SessionParameters session;
@@ -77,14 +71,8 @@ namespace OpcUa
             session.EndpointURL = endpoint;
             session.Timeout = 1200000;
 
-            std::cout << "Creating session" << std::endl;
             server->CreateSession(session);
             server->ActivateSession();
-            std::cout << "We are connected" << std::endl;
-            std::cout << "Endpoitns are: " << server->Endpoints() <<std::endl;
-            Node root = GetRootNode();
-            std::cout << "root is: " << root << std::endl;
-            //sleep(1);
 
       }
 
@@ -108,8 +96,6 @@ namespace OpcUa
 
         Node Client::GetObjectsNode()
         {
-            std::cout << "Getting node object" << std::endl;
-            std::cout << server->Endpoints() << std::endl;
             return Node(server, OpcUa::ObjectID::ObjectsFolder);
         }
   }

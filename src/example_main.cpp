@@ -20,33 +20,38 @@ int main(int argc, char** argv)
 {
   try
   {
+      //clt.connect("opc.tcp://192.168.56.101:48030");
+      std::string endpoint = "opc.tcp://127.0.0.1:4841";
+      std::cout << "Connecting to" << endpoint << std::endl;
       OpcUa::Client::Client clt;
-      std::cout << "Connecting" << std::endl;
-      clt.connect("opc.tcp://192.168.56.101:48030");
-      //std::cout << "Connected" << std::endl;
-      //sleep(2);
-      //std::cout << "stop sleep" << std::endl;
-      //std::cout <<  "endpoints" << clt.server->Endpoints() << std::endl;
+      clt.connect(endpoint);
+      std::cout <<  "Endpoints is" << clt.GetEndpoint() << std::endl;
 
-      OpcUa::Node objects = clt.GetObjectsNode();
+      OpcUa::Node root = clt.GetRootNode();
+      std::cout << "Root node is: " << root << std::endl;
+      std::vector<std::string> path({"Objects", "Server"});
+      OpcUa::Node server = root.GetChildNode(path);
+      std::cout << "Server node obainted by path: " << server << std::endl;
 
-      std::cout << "Objects node is: " << objects << std::endl;
-      for (OpcUa::Node node : objects.Browse())
+      std::cout << "Child of objects node are: " << std::endl;
+      for (OpcUa::Node node : clt.GetObjectsNode().Browse())
       {
-          std::cout << "Child id: " << node << std::endl;
+          std::cout << "    " << node << std::endl;
       }
-      OpcUa::Node serv = objects.FindChildNode("Server");
-      if (serv) {
-          std::cout << "Serv is: " << serv << std::endl;
-        OpcUa::Node nsnode = serv.FindChildNode("NamespaceArray");
-        if (nsnode) {
-          std::cout << "namspacearrar is: " << nsnode << std::endl;
-            OpcUa::Variant ns  = nsnode.ReadValue();
-            for (std::string d : ns.Value.String) {
-                std::cout << "ns is: "  << d << std::endl;
-            }
-        }
-        OpcUa::Node node = serv.FindChildNode("ServiceLevel");
+
+      std::cout << "NamespaceArray is: " << std::endl;
+      std::vector<std::string> nspath ({"Objects", "Server", "NamespaceArray"});
+      OpcUa::Node nsnode = root.GetChildNode(nspath);
+      if (nsnode) 
+      {
+        OpcUa::Variant ns  = nsnode.ReadValue();
+          for (std::string d : ns.Value.String) {
+            std::cout << "    "  << d << std::endl;
+          }
+      }
+      /*
+      std::vector<std::string> nspath ({"Objects", "Server", "NamespaceArray"});
+        OpcUa::Node node = serv.GetChildNode("ServiceLevel");
         if (nsnode) {
           std::cout << "ServiceLevel is: " << node << std::endl;
             OpcUa::Variant ns  = node.ReadValue();
@@ -55,10 +60,8 @@ int main(int argc, char** argv)
                 std::cout << "ServiceLevel is: "  << d << std::endl;
             }
         }
-
       }
-      //sleep(4);
-
+      */
       //std::cout << "Disconnecting" << std::endl;
       clt.disconnect();
       return 0;
