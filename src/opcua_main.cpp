@@ -16,6 +16,7 @@
 #include <opc/common/addons_core/config_file.h>
 #include <opc/common/application.h>
 #include <opc/common/uri_facade.h>
+#include <opc/common/node.h>
 #include <opc/ua/computer.h>
 #include <opc/ua/node_classes.h>
 
@@ -590,6 +591,13 @@ namespace
 
     computer->CreateSession(session);
     computer->ActivateSession();
+
+    Node root(computer, ObjectID::RootFolder);
+    std::cout << "Root is : " << root << std::endl;
+    for (Node node: root.Browse())
+    {
+        std::cout << "Child is: " << node << std::endl;
+    }
 
     if (cmd.IsBrowseOperation())
     {

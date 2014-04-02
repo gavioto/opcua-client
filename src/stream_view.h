@@ -31,7 +31,7 @@ namespace OpcUa
       {
       }
 
-      virtual std::vector<BrowsePathResult> TranslateBrowsePathToNodeIds(TranslateBrowsePathsParameters params) const
+      virtual std::vector<BrowsePathResult> TranslateBrowsePathsToNodeIds(const TranslateBrowsePathsParameters& params) const
       {
         TranslateBrowsePathsToNodeIDsRequest request;
         request.Header.SessionAuthenticationToken = AuthenticationToken;
