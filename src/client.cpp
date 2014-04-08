@@ -23,7 +23,7 @@
 #include <opc/common/addons_core/addon_manager.h>
 #include <opc/common/addons_core/config_file.h>
 #include <opc/common/application.h>
-#include <opc/common/node.h>
+#include <opc/ua/node.h>
 #include <opc/common/uri_facade.h>
 #include <opc/ua/computer.h>
 
@@ -38,7 +38,7 @@ namespace OpcUa
 {
     namespace Client
     {
-        void Client::connect(const std::string &endpoint)
+        void Client::Connect()
         {
             //Load condfiguration
             //const std::string configDir = configPath;
@@ -76,7 +76,7 @@ namespace OpcUa
 
       }
 
-        void Client::disconnect()
+        void Client::Disconnect()
         {
             std::cout << "closing session" << std::endl;
             server->CloseSession(); 

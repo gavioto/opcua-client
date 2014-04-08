@@ -23,7 +23,7 @@
 
 
 #include <opc/common/application.h>
-#include <opc/common/node.h>
+#include <opc/ua/node.h>
 
 
 namespace OpcUa
@@ -35,22 +35,21 @@ namespace OpcUa
     {
         public:
             Client(){} 
-            Client(const std::string& configDir){this->configPath = configDir;} 
+            //Client(const std::string& configDir){this->configPath = configDir;} 
             //~Client(){disconnect();}
-
-            void connect( const std::string& endpoint ); 
-            void createSession(); 
-            void disconnect(); 
+            void Connect(); 
+            //void CreateSession();  //Shoudl also be exposed
+            void Disconnect(); 
 
             void  SetSessionName(const std::string& str) { sessionName = str; }
             std::string  GetSessionName() { return sessionName; }
             std::string  GetURI() { return m_uri; }
-            void  SetURI(std::string uri) { m_uri = uri; }
+            void SetURI(std::string uri) { m_uri = uri; }
 
             std::string  GetEndpoint() { return endpoint; }
-            std::string  secPolicy() { return "None"; }
-            // Used messages mode for the secure channel, allowed: MS_None, MS_Sign, MS_SignAndEncrypt
-            //int secMessMode() { return MS_None; }
+            void SetEndpoint(std::string endpoint) { this->endpoint = endpoint; }
+            void SetSecurityPolicy(std::string sec) {security_policy = sec;}
+            std::string  GetSecurityPolicy() { return security_policy; }
 
             Node GetRootNode(); 
             Node GetObjectsNode();
@@ -59,10 +58,11 @@ namespace OpcUa
         private:
             OpcUa::Remote::Computer::SharedPtr server;
             OpcUa::Application::UniquePtr application;
-            std::string  endpoint;
+            std::string  endpoint = "opc.tcp:://localhost:4841";
             std::string  sessionName = "Open source OPC-UA Client Session";
             std::string  m_uri = "https://github.com/treww/opc_layer.git";
             std::string  configPath=".";
+            std::string security_policy = "none";
         };
 
 

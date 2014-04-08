@@ -10,7 +10,7 @@
 
 
 #include <iostream>
-#include <opc/common/node.h>
+#include <opc/ua/node.h>
 
 #include <stdexcept>
 
@@ -24,7 +24,8 @@ int main(int argc, char** argv)
       std::string endpoint = "opc.tcp://127.0.0.1:4841";
       std::cout << "Connecting to" << endpoint << std::endl;
       OpcUa::Client::Client clt;
-      clt.connect(endpoint);
+      clt.SetEndpoint(endpoint);
+      clt.Connect();
       std::cout <<  "Endpoints is" << clt.GetEndpoint() << std::endl;
 
       OpcUa::Node root = clt.GetRootNode();
@@ -63,7 +64,7 @@ int main(int argc, char** argv)
       }
       */
       //std::cout << "Disconnecting" << std::endl;
-      clt.disconnect();
+      clt.Disconnect();
       return 0;
   }
   catch (const std::exception& exc)

@@ -16,7 +16,7 @@
 #include <opc/common/addons_core/config_file.h>
 #include <opc/common/application.h>
 #include <opc/common/uri_facade.h>
-#include <opc/common/node.h>
+#include <opc/ua/node.h>
 #include <opc/ua/computer.h>
 #include <opc/ua/node_classes.h>
 
