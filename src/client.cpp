@@ -85,8 +85,16 @@ namespace OpcUa
         }
 
         Node Client::GetNode(NodeID nodeid)
-        {
-            return Node(server, nodeid);
+        {//FIXME: the validity check might have to be put in node code....
+          Node node(server, nodeid);
+          Variant var = node.Read(OpcUa::AttributeID::BROWSE_NAME); 
+          if (var.Type == OpcUa::VariantType::QUALIFIED_NAME)
+          {
+            QualifiedName qn = var.Value.Name.front();
+            node.SetBrowseNameCache(qn);
+            return node;
+          }
+          return Node(server); //Null node
         }
 
         Node Client::GetRootNode()

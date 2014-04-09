@@ -55,7 +55,7 @@ namespace OpcUa
             Node GetObjectsNode();
             Node GetNode(NodeID nodeid); 
 
-        private:
+        protected:
             OpcUa::Remote::Computer::SharedPtr server;
             OpcUa::Application::UniquePtr application;
             std::string  endpoint = "opc.tcp:://localhost:4841";
