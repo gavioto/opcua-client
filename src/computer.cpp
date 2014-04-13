@@ -58,6 +58,12 @@ namespace
       return Impl->Views();
     }
 
+    virtual std::shared_ptr<AddressSpaceServices> AddressSpace() const
+    {
+      return Impl->AddressSpace();
+    }
+
+
     virtual std::shared_ptr<AttributeServices> Attributes() const
     {
       return Impl->Attributes();
