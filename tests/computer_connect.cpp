@@ -10,25 +10,25 @@
 
 #include "common.h"
 
-#include <opc/ua/client/remote_computer.h>
+#include <opc/ua/client/remote_server.h>
 
 #include <stdexcept>
 
-TEST(Computer, EstablishValidConnection)
+TEST(Server, EstablishValidConnection)
 {
   const std::string endpoint = GetEndpoint();
-  std::unique_ptr<OpcUa::Remote::Computer> computer;
+  std::unique_ptr<OpcUa::Remote::Server> computer;
   ASSERT_NO_THROW(computer = OpcUa::Remote::Connect(endpoint));
   ASSERT_TRUE(computer.get());
 }
 
-TEST(Computer, ErrorIfInvalidUri)
+TEST(Server, ErrorIfInvalidUri)
 {
   const std::string endpoint = "invalid uri";
   ASSERT_THROW(OpcUa::Remote::Connect(endpoint), std::logic_error);
 }
 
-TEST(Computer, ErrorIdUnknownHost)
+TEST(Server, ErrorIdUnknownHost)
 {
   const std::string endpoint = "opc.tcp://host.at.tne.mars:4840";
   ASSERT_THROW(OpcUa::Remote::Connect(endpoint), std::logic_error);

@@ -56,7 +56,7 @@ namespace OpcUa
             Node GetNode(NodeID nodeid); 
 
         protected:
-            OpcUa::Remote::Computer::SharedPtr server;
+            OpcUa::Remote::Server* server;
             OpcUa::Application::UniquePtr application;
             std::string  endpoint = "opc.tcp:://localhost:4841";
             std::string  sessionName = "Open source OPC-UA Client Session";

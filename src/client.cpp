@@ -25,7 +25,7 @@
 #include <opc/common/application.h>
 #include <opc/ua/node.h>
 #include <opc/common/uri_facade.h>
-#include <opc/ua/computer.h>
+#include <opc/ua/server.h>
 
 
 
@@ -60,7 +60,7 @@ namespace OpcUa
             const Common::Uri uri(endpoint);
             const OpcUa::Client::Addon::SharedPtr addon = application->GetAddonsManager().GetAddon<OpcUa::Client::Addon>(uri.Scheme());
             //std::shared_ptr<OpcUa::Client::Addon> addon = application->GetAddonsManager().GetAddon<OpcUa::Client::Addon>(uri.Scheme());
-            this->server = addon->Connect(endpoint);
+            this->server = addon->Connect(endpoint).get();
 
             OpcUa::Remote::SessionParameters session;
             session.ClientDescription.URI = m_uri;

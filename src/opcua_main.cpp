@@ -1,6 +1,6 @@
 /// @author Alexander Rykovanov 2013
 /// @email rykovanov.as@gmail.com
-/// @brief Remote Computer implementaion.
+/// @brief Remote Server implementaion.
 /// @license GNU GPL
 ///
 /// Distributed under the GNU GPL License
@@ -17,7 +17,7 @@
 #include <opc/common/application.h>
 #include <opc/common/uri_facade.h>
 #include <opc/ua/node.h>
-#include <opc/ua/computer.h>
+#include <opc/ua/server.h>
 #include <opc/ua/node_classes.h>
 
 #include <stdexcept>
@@ -302,7 +302,7 @@ namespace
 //    std::vector<UserTokenPolicy> ;
   }
 
-  void PrintEndpoints(const OpcUa::Remote::Computer& computer)
+  void PrintEndpoints(const OpcUa::Remote::Server& computer)
   {
     std::shared_ptr<OpcUa::Remote::EndpointServices> service = computer.Endpoints();
     OpcUa::EndpointsFilter filter;
@@ -314,7 +314,7 @@ namespace
     }
   }
 
-  void PrintServers(const OpcUa::Remote::Computer& computer)
+  void PrintServers(const OpcUa::Remote::Server& computer)
   {
     std::shared_ptr<OpcUa::Remote::EndpointServices> service = computer.Endpoints();
     OpcUa::FindServersParameters filter;
@@ -568,7 +568,7 @@ namespace
     const std::string serverURI = cmd.GetServerURI();
     const Common::Uri uri(serverURI);
     OpcUa::Client::Addon::SharedPtr addon = addons.GetAddon<OpcUa::Client::Addon>(uri.Scheme());
-    std::shared_ptr<OpcUa::Remote::Computer> computer = addon->Connect(serverURI);
+    std::shared_ptr<OpcUa::Remote::Server> computer = addon->Connect(serverURI);
 
     if (cmd.IsGetEndpointsOperation())
     {
@@ -591,13 +591,6 @@ namespace
 
     computer->CreateSession(session);
     computer->ActivateSession();
-
-    Node root(computer, ObjectID::RootFolder);
-    std::cout << "Root is : " << root << std::endl;
-    for (Node node: root.Browse())
-    {
-        std::cout << "Child is: " << node << std::endl;
-    }
 
     if (cmd.IsBrowseOperation())
     {

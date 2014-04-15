@@ -10,7 +10,7 @@
 
 #include "common.h"
 
-#include <opc/ua/client/remote_computer.h>
+#include <opc/ua/client/remote_server.h>
 #include <opc/ua/object_ids.h>
 
 #include <stdexcept>
@@ -63,7 +63,7 @@ protected:
 
 protected:
   OpcUa::NodesQuery Query;
-  std::unique_ptr<Computer> Server;
+  std::unique_ptr<Server> Server;
   std::shared_ptr<ViewServices> Service;
 };
 

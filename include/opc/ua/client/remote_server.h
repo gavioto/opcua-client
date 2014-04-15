@@ -11,7 +11,7 @@
 #ifndef OPC_UA_CLIENT_COMPUTER_H
 #define OPC_UA_CLIENT_COMPUTER_H
 
-#include <opc/ua/computer.h>
+#include <opc/ua/server.h>
 
 #include <memory>
 
@@ -24,7 +24,7 @@ namespace OpcUa
     /// @param url url of the server.
     /// @note url in the form: opc.tcp://host:port connect with opc ua binary protocol
     /// @note url in the form https://host:port
-    std::unique_ptr<Computer> Connect(const std::string& url);
+    std::unique_ptr<Server> Connect(const std::string& url);
 
   }
 }

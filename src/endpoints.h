@@ -10,7 +10,7 @@
 
 
 #include <opc/ua/channel.h>
-#include <opc/ua/computer.h>
+#include <opc/ua/server.h>
 #include <opc/ua/protocol/binary/stream.h>
 #include <opc/ua/protocol/endpoints.h>
 

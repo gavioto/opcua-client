@@ -1,6 +1,6 @@
 /// @author Alexander Rykovanov 2012
 /// @email rykovanov.as@gmail.com
-/// @brief Remote Computer implementaion.
+/// @brief Remote Server implementaion.
 /// @license GNU LGPL
 ///
 /// Distributed under the GNU LGPL License
@@ -8,12 +8,12 @@
 /// http://www.gnu.org/licenses/lgpl.html)
 ///
 
-#include "stream_computer.h"
+#include "stream_server.h"
 
 #include <opc/common/uri_facade.h>
 #include <opc/ua/protocol/binary/secure_connection.h>
-#include <opc/ua/client/binary_computer.h>
-#include <opc/ua/client/remote_computer.h>
+#include <opc/ua/client/binary_server.h>
+#include <opc/ua/client/remote_server.h>
 #include <opc/ua/client/remote_connection.h>
 #include <stdexcept>
 
@@ -23,14 +23,14 @@ namespace
   using namespace OpcUa;
   using namespace OpcUa::Remote;
 
-  class UaComputer : public OpcUa::Remote::Computer
+  class UaServer : public OpcUa::Remote::Server
   {
   public:
-    UaComputer(const std::string& uri)
+    UaServer(const std::string& uri)
       : ServerUri(uri)
     {
       std::shared_ptr<IOChannel>  channel = CreateSecureChannel(uri);
-      Impl = CreateComputerByProtocol(ServerUri.Scheme(), channel);
+      Impl = CreateServerByProtocol(ServerUri.Scheme(), channel);
     }
 
     virtual void CreateSession(const Remote::SessionParameters& parameters)
@@ -75,11 +75,11 @@ namespace
     }
 
   private:
-    std::unique_ptr<OpcUa::Remote::Computer> CreateComputerByProtocol(const std::string& protocol, std::shared_ptr<IOChannel> channel) const
+    std::unique_ptr<OpcUa::Remote::Server> CreateServerByProtocol(const std::string& protocol, std::shared_ptr<IOChannel> channel) const
     {
       if (protocol == "opc.tcp")
       {
-        return CreateBinaryComputer(channel);
+        return CreateBinaryServer(channel);
       }
       throw std::invalid_argument("Unknown protocol: " + ServerUri.Scheme());
     }
@@ -95,14 +95,14 @@ namespace
 
   private:
     const Common::Uri ServerUri;
-    std::unique_ptr<OpcUa::Remote::Computer> Impl;
+    std::unique_ptr<OpcUa::Remote::Server> Impl;
   };
 
 
 }
 
-std::unique_ptr<OpcUa::Remote::Computer> OpcUa::Remote::Connect(const std::string& url)
+std::unique_ptr<OpcUa::Remote::Server> OpcUa::Remote::Connect(const std::string& url)
 {
-  return std::unique_ptr<OpcUa::Remote::Computer>(new UaComputer(url));
+  return std::unique_ptr<OpcUa::Remote::Server>(new UaServer(url));
 }
 

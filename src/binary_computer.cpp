@@ -1,6 +1,6 @@
 /// @author Alexander Rykovanov 2012
 /// @email rykovanov.as@gmail.com
-/// @brief Remote Computer implementaion.
+/// @brief Remote server implementaion.
 /// @license GNU LGPL
 ///
 /// Distributed under the GNU LGPL License
@@ -8,14 +8,14 @@
 /// http://www.gnu.org/licenses/lgpl.html)
 ///
 
-#include "stream_computer.h"
+#include "stream_server.h"
 
 #include <opc/common/uri_facade.h>
-#include <opc/ua/client/binary_computer.h>
+#include <opc/ua/client/binary_server.h>
 
 
-std::unique_ptr<OpcUa::Remote::Computer> OpcUa::Remote::CreateBinaryComputer(std::shared_ptr<IOChannel> connection)
+std::unique_ptr<OpcUa::Remote::Server> OpcUa::Remote::CreateBinaryServer(std::shared_ptr<IOChannel> connection)
 {
-  return std::unique_ptr<OpcUa::Remote::Computer>(new OpcUa::Internal::BinaryComputer(connection));
+  return std::unique_ptr<OpcUa::Remote::Server>(new OpcUa::Internal::BinaryServer(connection));
 }
 

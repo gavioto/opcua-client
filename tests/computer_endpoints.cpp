@@ -10,7 +10,7 @@
 
 #include "common.h"
 
-#include <opc/ua/client/remote_computer.h>
+#include <opc/ua/client/remote_server.h>
 
 #include <stdexcept>
 
@@ -22,7 +22,7 @@ class Endpoints : public ::testing::Test
 protected:
   virtual void SetUp()
   {
-    std::unique_ptr<OpcUa::Remote::Computer> computer = OpcUa::Remote::Connect(GetEndpoint());
+    std::unique_ptr<OpcUa::Remote::Server> computer = OpcUa::Remote::Connect(GetEndpoint());
     Server = computer->Endpoints();
   }
 

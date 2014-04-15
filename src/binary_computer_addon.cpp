@@ -10,13 +10,13 @@
 
 
 #include <opc/ua/client/addon.h>
-#include <opc/ua/client/remote_computer.h>
+#include <opc/ua/client/remote_server.h>
 #include <opc/common/addons_core/addon_manager.h>
 
 
 namespace
 {
-  class BinaryComputerAddon : public OpcUa::Client::Addon
+  class BinaryServerAddon : public OpcUa::Client::Addon
   {
   public:
     virtual void Initialize(Common::AddonsManager& manager, const Common::AddonParameters& parameters)
@@ -33,7 +33,7 @@ namespace
       return "opc.tcp";
     }
 
-    virtual OpcUa::Remote::Computer::SharedPtr Connect(const std::string& url)
+    virtual OpcUa::Remote::Server::SharedPtr Connect(const std::string& url)
     {
       return OpcUa::Remote::Connect(url);
     }
@@ -42,5 +42,5 @@ namespace
 
 extern "C" Common::Addon::UniquePtr CreateAddon()
 {
-  return Common::Addon::UniquePtr(new BinaryComputerAddon());
+  return Common::Addon::UniquePtr(new BinaryServerAddon());
 }

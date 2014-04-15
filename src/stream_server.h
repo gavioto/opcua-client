@@ -1,6 +1,6 @@
 /// @author Alexander Rykovanov 2012
 /// @email rykovanov.as@gmail.com
-/// @brief Remote Computer implementaion.
+/// @brief Remote Server implementaion.
 /// @license GNU LGPL
 ///
 /// Distributed under the GNU LGPL License
@@ -14,7 +14,7 @@
 #include "stream_view.h"
 
 #include <opc/ua/channel.h>
-#include <opc/ua/computer.h>
+#include <opc/ua/server.h>
 #include <opc/ua/protocol/binary/stream.h>
 #include <opc/ua/protocol/session.h>
 
@@ -24,10 +24,10 @@ namespace OpcUa
   {
 
     template <class StreamType>
-    class Computer : public OpcUa::Remote::Computer
+    class Server : public OpcUa::Remote::Server
     {
     public:
-      explicit Computer(std::shared_ptr<IOChannel> channel)
+      explicit Server(std::shared_ptr<IOChannel> channel)
         : Channel(channel)
         , Stream(channel)
         , RequestHandle(0)
@@ -126,7 +126,7 @@ namespace OpcUa
       unsigned RequestHandle;
     };
 
-    typedef Computer<OpcUa::Binary::IOStream<IOChannel>> BinaryComputer;
+    typedef Server<OpcUa::Binary::IOStream<IOChannel>> BinaryServer;
 
   } // namespace Internal
 } // namespace OpcUa

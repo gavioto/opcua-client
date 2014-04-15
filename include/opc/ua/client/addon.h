@@ -13,7 +13,7 @@
 
 #include <opc/common/addons_core/addon.h>
 
-#include <opc/ua/computer.h>
+#include <opc/ua/server.h>
 
 namespace OpcUa
 {
@@ -26,7 +26,7 @@ namespace OpcUa
 
     public:
       virtual std::string GetProtocol() const = 0;
-      virtual OpcUa::Remote::Computer::SharedPtr Connect(const std::string& url) = 0;
+      virtual OpcUa::Remote::Server::SharedPtr Connect(const std::string& url) = 0;
     };
   }
 }

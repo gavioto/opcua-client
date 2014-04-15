@@ -10,13 +10,13 @@
 
 #include "common.h"
 
-#include <opc/ua/client/remote_computer.h>
+#include <opc/ua/client/remote_server.h>
 
 #include <stdexcept>
 
 TEST(Session, Works)
 {
-  std::unique_ptr<OpcUa::Remote::Computer> computer = OpcUa::Remote::Connect(GetEndpoint());
+  std::unique_ptr<OpcUa::Remote::Server> computer = OpcUa::Remote::Connect(GetEndpoint());
 
   OpcUa::Remote::SessionParameters session;
   session.ClientDescription.Name.Text = "opcua client";
