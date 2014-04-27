@@ -23,33 +23,28 @@ int main(int argc, char** argv)
       //clt.connect("opc.tcp://192.168.56.101:48030");
       std::string endpoint = "opc.tcp://127.0.0.1:4841";
       std::cout << "Connecting to" << endpoint << std::endl;
-      OpcUa::Client::Client clt;
-      clt.SetEndpoint(endpoint);
-      clt.Connect();
+      OpcUa::RemoteClient clt(endpoint);
       std::cout <<  "Endpoints is" << clt.GetEndpoint() << std::endl;
 
-      OpcUa::Node root = clt.GetRootNode();
+      OpcUa::Node root = clt.GetRoot();
       std::cout << "Root node is: " << root << std::endl;
       std::vector<std::string> path({"Objects", "Server"});
-      OpcUa::Node server = root.GetChildNode(path);
+      OpcUa::Node server = root.GetChild(path);
       std::cout << "Server node obainted by path: " << server << std::endl;
 
       std::cout << "Child of objects node are: " << std::endl;
-      for (OpcUa::Node node : clt.GetObjectsNode().Browse())
-      {
-          std::cout << "    " << node << std::endl;
-      }
+
+      for (OpcUa::Node node : clt.GetObjectsFolder().GetChildren())
+        std::cout << "    " << node << std::endl;
 
       std::cout << "NamespaceArray is: " << std::endl;
       std::vector<std::string> nspath ({"Objects", "Server", "NamespaceArray"});
-      OpcUa::Node nsnode = root.GetChildNode(nspath);
-      if (nsnode) 
-      {
-        OpcUa::Variant ns  = nsnode.ReadValue();
-          for (std::string d : ns.Value.String) {
-            std::cout << "    "  << d << std::endl;
-          }
-      }
+      OpcUa::Node nsnode = root.GetChild(nspath);
+      OpcUa::Variant ns  = nsnode.GetValue();
+
+      for (std::string d : ns.Value.String)
+        std::cout << "    "  << d << std::endl;
+
       /*
       std::vector<std::string> nspath ({"Objects", "Server", "NamespaceArray"});
         OpcUa::Node node = serv.GetChildNode("ServiceLevel");
@@ -63,8 +58,7 @@ int main(int argc, char** argv)
         }
       }
       */
-      //std::cout << "Disconnecting" << std::endl;
-      clt.Disconnect();
+      std::cout << "Disconnecting" << std::endl;
       return 0;
   }
   catch (const std::exception& exc)
