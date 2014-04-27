@@ -21,6 +21,7 @@ namespace
   public:
     virtual void Initialize(Common::AddonsManager& manager, const Common::AddonParameters& parameters)
     {
+
     }
 
     virtual void Stop()
@@ -37,6 +38,9 @@ namespace
     {
       return OpcUa::Remote::Connect(url);
     }
+
+  private:
+    bool Debug = false;
   };
 }
 
