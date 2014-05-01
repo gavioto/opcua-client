@@ -22,6 +22,7 @@
 
 
 
+//#include <opc/ua/client/addon.h>
 #include <opc/common/application.h>
 #include <opc/ua/node.h>
 
@@ -57,7 +58,11 @@ namespace OpcUa
 
         protected:
             OpcUa::Remote::Server* server;
-            OpcUa::Application::UniquePtr application;
+            OpcUa::Remote::Server::SharedPtr sserver;
+            //OpcUa::Client::Addon::SharedPtr clt;
+            Common::AddonsManager::UniquePtr addons;
+            std::vector<Common::AddonInformation> infos; //why do I need to keep a pointer? otherwise I get coredump
+            //OpcUa::Application::UniquePtr application;
             std::string  endpoint = "opc.tcp:://localhost:4841";
             std::string  sessionName = "Open source OPC-UA Client Session";
             std::string  m_uri = "https://github.com/treww/opc_layer.git";

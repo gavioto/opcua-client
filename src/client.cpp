@@ -43,24 +43,35 @@ namespace OpcUa
             //Load condfiguration
             //const std::string configDir = configPath;
             //const Common::ModulesConfiguration& configuration = Common::ParseConfigurationFiles(configDir);
-            Common::ModulesConfiguration configuration;
+            Common::ModulesConfiguration modules;
             //Depending on endpoint we should load correct modules. Currently we only support opc.tcp anyway
             std::cout << "Loading modules" << std::endl;
             Common::ModuleConfiguration moduleConfig;
             moduleConfig.ID = "opc.tcp";
             moduleConfig.Path = "libopc_tcp_client.so";
-            configuration.push_back(moduleConfig);
+            modules.push_back(moduleConfig);
             //Now start application
-            application = OpcUa::CreateApplication();
-            std::vector<Common::AddonInformation> infos(configuration.size()); 
-            std::transform(configuration.begin(), configuration.end(), infos.begin(), std::bind(&Common::GetAddonInfomation, std::placeholders::_1));
-            application->Start(infos);
+            //application = OpcUa::CreateApplication();
+            std::transform(modules.begin(), modules.end(), std::back_inserter(infos), std::bind(&Common::GetAddonInfomation, std::placeholders::_1));
+            //std::vector<Common::AddonInformation> infos(configuration.size()); 
+            //std::transform(configuration.begin(), configuration.end(), infos.begin(), std::bind(&Common::GetAddonInfomation, std::placeholders::_1));
+            addons = Common::CreateAddonsManager();
+            for (const Common::AddonInformation& config : infos)
+            {
+              addons->Register(config);
+            }
+            addons->Start();
 
 
             const Common::Uri uri(endpoint);
-            const OpcUa::Client::Addon::SharedPtr addon = application->GetAddonsManager().GetAddon<OpcUa::Client::Addon>(uri.Scheme());
+            const OpcUa::Client::Addon::SharedPtr clt = addons->GetAddon<OpcUa::Client::Addon>(uri.Scheme());
+            //clt = addons->GetAddon<OpcUa::Client::Addon>(uri.Scheme());
             //std::shared_ptr<OpcUa::Client::Addon> addon = application->GetAddonsManager().GetAddon<OpcUa::Client::Addon>(uri.Scheme());
-            this->server = addon->Connect(endpoint).get();
+            //Remote::Server::SharedPtr srv = clt->Connect(endpoint);
+            sserver = clt->Connect(endpoint);
+            //this->server = srv.get();
+            server = sserver.get();
+            //server = clt->Connect(endpoint).get();
 
             OpcUa::Remote::SessionParameters session;
             session.ClientDescription.URI = m_uri;
@@ -71,7 +82,10 @@ namespace OpcUa
             session.EndpointURL = endpoint;
             session.Timeout = 1200000;
 
-            server->CreateSession(session);
+            std::cout << "creating session" << std::endl;
+            if (server == NULL){ std::cout << "Warning server is null!!!" << std::endl;}
+            this->server->CreateSession(session);
+            std::cout << "activating session" << std::endl;
             server->ActivateSession();
 
       }
@@ -80,7 +94,7 @@ namespace OpcUa
         {
             std::cout << "closing session" << std::endl;
             server->CloseSession(); 
-            application->Stop(); 
+            addons->Stop(); 
             std::cout << "finished" << std::endl;
         }
 
@@ -99,6 +113,7 @@ namespace OpcUa
 
         Node Client::GetRootNode()
         {
+            if (server == NULL){ std::cout << "Warning server is null!!!" << std::endl;}
             return Node(server, OpcUa::ObjectID::RootFolder);
         }
 
