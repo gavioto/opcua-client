@@ -43,6 +43,19 @@ namespace OpcUa
         return response.Data;
       }
 
+      virtual SubscriptionData CreateMonitoredItems(const MonitoredItemsParameters& parameters)
+      {
+        CreateMonitoredItemsRequest request;
+        request.Header.SessionAuthenticationToken = AuthenticationToken;
+        request.Parameters = parameters;
+
+        Stream << request << OpcUa::Binary::flush;
+
+        CreateSubscriptionResponse response;
+        Stream >> response;
+        return response.Data;
+      }
+
     private:
       mutable StreamType Stream;
       NodeID AuthenticationToken;
