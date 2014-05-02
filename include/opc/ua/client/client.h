@@ -20,6 +20,7 @@
 
 #pragma once
 
+//#include <opc/ua/client/addon.h>
 #include <opc/common/application.h>
 #include <opc/ua/node.h>
 

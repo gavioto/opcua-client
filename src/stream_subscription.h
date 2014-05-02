@@ -13,6 +13,7 @@
 
 #include <opc/ua/view.h>
 #include <opc/ua/protocol/attribute.h>
+#include <opc/ua/protocol/monitored_items.h>
 #include <opc/ua/protocol/binary/stream.h>
 
 namespace OpcUa
@@ -33,6 +34,19 @@ namespace OpcUa
       virtual SubscriptionData CreateSubscription(const SubscriptionParameters& parameters)
       {
         CreateSubscriptionRequest request;
+        request.Header.SessionAuthenticationToken = AuthenticationToken;
+        request.Parameters = parameters;
+
+        Stream << request << OpcUa::Binary::flush;
+
+        CreateSubscriptionResponse response;
+        Stream >> response;
+        return response.Data;
+      }
+
+      virtual SubscriptionData CreateMonitoredItems(const MonitoredItemsParameters& parameters)
+      {
+        CreateMonitoredItemsRequest request;
         request.Header.SessionAuthenticationToken = AuthenticationToken;
         request.Parameters = parameters;
 
