@@ -10,6 +10,7 @@
 
 #include "endpoints.h"
 #include "stream_attribute.h"
+#include "stream_node_management.h"
 #include "stream_subscription.h"
 #include "stream_view.h"
 
@@ -17,6 +18,8 @@
 #include <opc/ua/server.h>
 #include <opc/ua/protocol/binary/stream.h>
 #include <opc/ua/protocol/session.h>
+
+#include <atomic>
 
 namespace OpcUa
 {
@@ -98,11 +101,11 @@ namespace OpcUa
         return std::shared_ptr<Remote::ViewServices>(new Internal::ViewServices<StreamType>(Channel, AuthenticationToken));
       }
 
-      virtual std::shared_ptr<Remote::AddressSpaceServices> AddressSpace() const
+      virtual std::shared_ptr<Remote::NodeManagementServices> NodeManagement() const
       {
-        //return std::shared_ptr<Remote::AddressSpaceServices>(new Internal::AddressSpaceServices<StreamType>(Channel, AuthenticationToken));
-        return std::shared_ptr<Remote::AddressSpaceServices>(); //Not implemented
+        return std::shared_ptr<Remote::NodeManagementServices>(new Internal::NodeManagementServices<StreamType>(Channel, AuthenticationToken));
       }
+
       virtual std::shared_ptr<Remote::AttributeServices> Attributes() const
       {
         return std::shared_ptr<Remote::AttributeServices>(new Internal::AttributeServices<StreamType>(Channel, AuthenticationToken));
@@ -123,7 +126,7 @@ namespace OpcUa
       std::shared_ptr<IOChannel> Channel;
       StreamType Stream;
       NodeID AuthenticationToken;
-      unsigned RequestHandle;
+      std::atomic<uint32_t> RequestHandle;
     };
 
     typedef Server<OpcUa::Binary::IOStream<IOChannel>> BinaryServer;
