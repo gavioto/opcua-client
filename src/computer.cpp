@@ -58,9 +58,9 @@ namespace
       return Impl->Views();
     }
 
-    virtual std::shared_ptr<AddressSpaceServices> AddressSpace() const
+    virtual std::shared_ptr<NodeManagementServices> NodeManagement() const
     {
-      return Impl->AddressSpace();
+      return Impl->NodeManagement();
     }
 
 

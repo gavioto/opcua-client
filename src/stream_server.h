@@ -98,10 +98,10 @@ namespace OpcUa
         return std::shared_ptr<Remote::ViewServices>(new Internal::ViewServices<StreamType>(Channel, AuthenticationToken));
       }
 
-      virtual std::shared_ptr<Remote::AddressSpaceServices> AddressSpace() const
+      virtual std::shared_ptr<Remote::NodeManagementServices> NodeManagement() const
       {
         //return std::shared_ptr<Remote::AddressSpaceServices>(new Internal::AddressSpaceServices<StreamType>(Channel, AuthenticationToken));
-        return std::shared_ptr<Remote::AddressSpaceServices>(); //Not implemented
+        return std::shared_ptr<Remote::NodeManagementServices>(); //Not implemented
       }
       virtual std::shared_ptr<Remote::AttributeServices> Attributes() const
       {
