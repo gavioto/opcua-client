@@ -43,7 +43,7 @@ namespace OpcUa
         return response.Data;
       }
 
-      virtual SubscriptionData CreateMonitoredItems(const MonitoredItemsParameters& parameters)
+      virtual MonitoredItemsData CreateMonitoredItems(const MonitoredItemsParameters& parameters)
       {
         CreateMonitoredItemsRequest request;
         request.Header.SessionAuthenticationToken = AuthenticationToken;
@@ -51,7 +51,7 @@ namespace OpcUa
 
         Stream << request << OpcUa::Binary::flush;
 
-        CreateSubscriptionResponse response;
+        CreateMonitoredItemsResponse response;
         Stream >> response;
         return response.Data;
       }
