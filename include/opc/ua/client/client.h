@@ -54,7 +54,6 @@ namespace OpcUa
     Node GetObjectsFolder() const;
     Node GetNode(NodeID nodeid) const;
 
-  private:
     void Connect();
     void Disconnect();
 
@@ -64,8 +63,11 @@ namespace OpcUa
     std::string Uri = "https://github.com/treww/opc_layer.git";
     std::string ConfigPath=".";
     std::string SecurityPolicy = "none";
+
+  protected:
     OpcUa::Remote::Server::SharedPtr Server;
     OpcUa::Application::UniquePtr Application;
+
   };
 
 } // namespace OpcUa

@@ -99,24 +99,24 @@ namespace OpcUa
 
   Node RemoteClient::GetNode(NodeID nodeId) const
   {//FIXME: the validity check might have to be put in node code....
-    Node node(*Server, nodeId);
+    Node node(Server, nodeId);
     Variant var = node.GetAttribute(OpcUa::AttributeID::BROWSE_NAME);
     if (var.Type == OpcUa::VariantType::QUALIFIED_NAME)
     {
       QualifiedName qn = var.Value.Name.front();
-      return Node(*Server, nodeId, qn);
+      return Node(Server, nodeId, qn);
     }
-    return Node(*Server); //Root node. TODO: exception!
+    return Node(Server); //Root node. TODO: exception!
   }
 
   Node RemoteClient::GetRoot() const
   {
-    return Node(*Server);
+    return Node(Server);
   }
 
   Node RemoteClient::GetObjectsFolder() const
   {
-    return Node(*Server, OpcUa::ObjectID::ObjectsFolder);
+    return Node(Server, OpcUa::ObjectID::ObjectsFolder);
   }
 
 } // namespace OpcUa
