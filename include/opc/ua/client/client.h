@@ -17,10 +17,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.              *
  ******************************************************************************/
 
-#ifndef CLIENT_H
-#define CLIENT_H
 
-
+#pragma once
 
 //#include <opc/ua/client/addon.h>
 #include <opc/common/application.h>
@@ -29,52 +27,45 @@
 
 namespace OpcUa
 {
-  namespace Client
+  class RemoteClient
   {
+  public:
+    RemoteClient();
+    explicit RemoteClient(const std::string& endpoint);
+    ~RemoteClient();
 
-    class Client
-    {
-        public:
-            Client(){} 
-            //Client(const std::string& configDir){this->configPath = configDir;} 
-            //~Client(){disconnect();}
-            void Connect(); 
-            //void CreateSession();  //Shoudl also be exposed
-            void Disconnect(); 
+    RemoteClient(const RemoteClient&&) = delete;
+    RemoteClient(const RemoteClient&) = delete;
+    RemoteClient& operator=(const RemoteClient&) = delete;
 
-            void  SetSessionName(const std::string& str) { sessionName = str; }
-            std::string  GetSessionName() { return sessionName; }
-            std::string  GetURI() { return m_uri; }
-            void SetURI(std::string uri) { m_uri = uri; }
+    void SetSessionName(const std::string& str) { SessionName = str; }
+    std::string GetSessionName() const { return SessionName; }
 
-            std::string  GetEndpoint() { return endpoint; }
-            void SetEndpoint(std::string endpoint) { this->endpoint = endpoint; }
-            void SetSecurityPolicy(std::string sec) {security_policy = sec;}
-            std::string  GetSecurityPolicy() { return security_policy; }
+    std::string GetURI() const { return Uri; }
+    void SetURI(std::string uri) { Uri = uri; }
 
-            Node GetRootNode(); 
-            Node GetObjectsNode();
-            Node GetNode(NodeID nodeid); 
+    std::string  GetEndpoint() const { return Endpoint; }
+    void SetEndpoint(std::string endpoint) { Endpoint = endpoint; }
 
-        protected:
-            OpcUa::Remote::Server* server;
-            OpcUa::Remote::Server::SharedPtr sserver;
-            //OpcUa::Client::Addon::SharedPtr clt;
-            Common::AddonsManager::UniquePtr addons;
-            std::vector<Common::AddonInformation> infos; //why do I need to keep a pointer? otherwise I get coredump
-            //OpcUa::Application::UniquePtr application;
-            std::string  endpoint = "opc.tcp:://localhost:4841";
-            std::string  sessionName = "Open source OPC-UA Client Session";
-            std::string  m_uri = "https://github.com/treww/opc_layer.git";
-            std::string  configPath=".";
-            std::string security_policy = "none";
-        };
+    void SetSecurityPolicy(std::string sec) {SecurityPolicy = sec;}
+    std::string GetSecurityPolicy() const { return SecurityPolicy; }
 
+    Node GetRoot() const;
+    Node GetObjectsFolder() const;
+    Node GetNode(NodeID nodeid) const;
 
+  private:
+    void Connect();
+    void Disconnect();
 
+  private:
+    std::string Endpoint = "opc.tcp:://localhost:4841";
+    std::string SessionName = "Open source OPC-UA Client Session";
+    std::string Uri = "https://github.com/treww/opc_layer.git";
+    std::string ConfigPath=".";
+    std::string SecurityPolicy = "none";
+    OpcUa::Remote::Server::SharedPtr Server;
+    OpcUa::Application::UniquePtr Application;
+  };
 
-
-  } //name space client
 } // namespace OpcUa
-
-#endif

@@ -55,6 +55,14 @@ opcua_SOURCES = \
 opcua_CPPFLAGS =  $(COMMON_INCLUDES)
 opcua_LDFLAGS =  $(UAMAPPINGS_LIBS) $(OPC_CORE_LIBS) -ldl -lboost_program_options -lpthread -lxml2
 
+noinst_PROGRAMS = example
+example_SOURCES = \
+  src/client.cpp \
+  src/example_main.cpp
+
+example_CPPFLAGS =  $(COMMON_INCLUDES)
+example_LDFLAGS =  $(UAMAPPINGS_LIBS) $(OPC_CORE_LIBS) -ldl -lpthread -lxml2
+
 #TESTS = libuaclient_test
 
 #check_PROGRAMS = $(TESTS)

@@ -28,98 +28,96 @@
 #include <opc/ua/server.h>
 
 
-
-
-
-
-
-
 namespace OpcUa
 {
-    namespace Client
-    {
-        void Client::Connect()
-        {
-            //Load condfiguration
-            //const std::string configDir = configPath;
-            //const Common::ModulesConfiguration& configuration = Common::ParseConfigurationFiles(configDir);
-            Common::ModulesConfiguration modules;
-            //Depending on endpoint we should load correct modules. Currently we only support opc.tcp anyway
-            std::cout << "Loading modules" << std::endl;
-            Common::ModuleConfiguration moduleConfig;
-            moduleConfig.ID = "opc.tcp";
-            moduleConfig.Path = "libopc_tcp_client.so";
-            modules.push_back(moduleConfig);
-            //Now start application
-            //application = OpcUa::CreateApplication();
-            std::transform(modules.begin(), modules.end(), std::back_inserter(infos), std::bind(&Common::GetAddonInfomation, std::placeholders::_1));
-            //std::vector<Common::AddonInformation> infos(configuration.size()); 
-            //std::transform(configuration.begin(), configuration.end(), infos.begin(), std::bind(&Common::GetAddonInfomation, std::placeholders::_1));
-            addons = Common::CreateAddonsManager();
-            for (const Common::AddonInformation& config : infos)
-            {
-              addons->Register(config);
-            }
-            addons->Start();
-
-
-            const Common::Uri uri(endpoint);
-            const OpcUa::Client::Addon::SharedPtr clt = addons->GetAddon<OpcUa::Client::Addon>(uri.Scheme());
-            //clt = addons->GetAddon<OpcUa::Client::Addon>(uri.Scheme());
-            //std::shared_ptr<OpcUa::Client::Addon> addon = application->GetAddonsManager().GetAddon<OpcUa::Client::Addon>(uri.Scheme());
-            //Remote::Server::SharedPtr srv = clt->Connect(endpoint);
-            sserver = clt->Connect(endpoint);
-            //this->server = srv.get();
-            server = sserver.get();
-            //server = clt->Connect(endpoint).get();
-
-            OpcUa::Remote::SessionParameters session;
-            session.ClientDescription.URI = m_uri;
-            session.ClientDescription.ProductURI = m_uri;
-            session.ClientDescription.Name.Text = sessionName;
-            session.ClientDescription.Type = OpcUa::ApplicationType::CLIENT;
-            session.SessionName = sessionName;
-            session.EndpointURL = endpoint;
-            session.Timeout = 1200000;
-
-            std::cout << "creating session" << std::endl;
-            if (server == NULL){ std::cout << "Warning server is null!!!" << std::endl;}
-            this->server->CreateSession(session);
-            std::cout << "activating session" << std::endl;
-            server->ActivateSession();
-
-      }
-
-        void Client::Disconnect()
-        {
-            std::cout << "closing session" << std::endl;
-            server->CloseSession(); 
-            addons->Stop(); 
-            std::cout << "finished" << std::endl;
-        }
-
-        Node Client::GetNode(NodeID nodeid)
-        {//FIXME: the validity check might have to be put in node code....
-          Node node(server, nodeid);
-          Variant var = node.Read(OpcUa::AttributeID::BROWSE_NAME); 
-          if (var.Type == OpcUa::VariantType::QUALIFIED_NAME)
-          {
-            QualifiedName qn = var.Value.Name.front();
-            node.SetBrowseNameCache(qn);
-            return node;
-          }
-          return Node(server); //Null node
-        }
-
-        Node Client::GetRootNode()
-        {
-            if (server == NULL){ std::cout << "Warning server is null!!!" << std::endl;}
-            return Node(server, OpcUa::ObjectID::RootFolder);
-        }
-
-        Node Client::GetObjectsNode()
-        {
-            return Node(server, OpcUa::ObjectID::ObjectsFolder);
-        }
+  RemoteClient::RemoteClient()
+  {
+    Connect();
   }
-}
+
+  RemoteClient::RemoteClient(const std::string& endpoint)
+    : Endpoint(endpoint)
+  {
+    Connect();
+  }
+
+  RemoteClient::~RemoteClient()
+  {
+    try
+    {
+      Disconnect();
+    }
+    catch(const std::exception& exc)
+    {
+      std::cerr << exc.what() << std::endl;
+    }
+  }
+
+  void RemoteClient::Connect()
+  {
+    //Load condfiguration
+    //const std::string configDir = configPath;
+    //const Common::ModulesConfiguration& configuration = Common::ParseConfigurationFiles(configDir);
+    Common::ModulesConfiguration configuration;
+    //Depending on endpoint we should load correct modules. Currently we only support opc.tcp anyway
+    std::clog << "Loading modules" << std::endl;
+    Common::ModuleConfiguration moduleConfig;
+    moduleConfig.ID = "opc.tcp";
+    configuration.push_back(moduleConfig);
+    moduleConfig.Path = "libopc_tcp_client.so";
+    //Now start application
+    Application = OpcUa::CreateApplication();
+    std::vector<Common::AddonInformation> infos(configuration.size());
+    std::transform(configuration.begin(), configuration.end(), infos.begin(), std::bind(&Common::GetAddonInfomation, std::placeholders::_1));
+    Application->Start(infos);
+
+    const Common::Uri uri(Endpoint);
+    const OpcUa::Client::Addon::SharedPtr addon = Application->GetAddonsManager().GetAddon<OpcUa::Client::Addon>(uri.Scheme());
+    Server = addon->Connect(Endpoint);
+
+    OpcUa::Remote::SessionParameters session;
+    session.ClientDescription.URI = Uri;
+    session.ClientDescription.ProductURI = Uri;
+    session.ClientDescription.Name.Text = SessionName;
+    session.ClientDescription.Type = OpcUa::ApplicationType::CLIENT;
+    session.SessionName = SessionName;
+    session.EndpointURL = Endpoint;
+    session.Timeout = 1200000;
+
+    Server->CreateSession(session);
+    Server->ActivateSession();
+  }
+
+  void RemoteClient::Disconnect()
+  {
+    std::clog << "closing session" << std::endl;
+    Server->CloseSession();
+    Server.reset();
+    Application->Stop();
+    std::clog << "finished" << std::endl;
+  }
+
+  Node RemoteClient::GetNode(NodeID nodeId) const
+  {//FIXME: the validity check might have to be put in node code....
+    Node node(*Server, nodeId);
+    Variant var = node.GetAttribute(OpcUa::AttributeID::BROWSE_NAME);
+    if (var.Type == OpcUa::VariantType::QUALIFIED_NAME)
+    {
+      QualifiedName qn = var.Value.Name.front();
+      return Node(*Server, nodeId, qn);
+    }
+    return Node(*Server); //Root node. TODO: exception!
+  }
+
+  Node RemoteClient::GetRoot() const
+  {
+    return Node(*Server);
+  }
+
+  Node RemoteClient::GetObjectsFolder() const
+  {
+    return Node(*Server, OpcUa::ObjectID::ObjectsFolder);
+  }
+
+} // namespace OpcUa
+
