@@ -57,6 +57,17 @@ namespace OpcUa
         return response.Data;
       }
 
+      virtual std::vector<PublishResult> PopPublishResults(const std::vector<IntegerID>& subscriptionsIds)
+      {
+        return std::vector<PublishResult>();
+      }
+
+      virtual void CreatePublishRequest(const std::vector<SubscriptionAcknowledgement>& acknowledgements)
+      {
+        PublishRequest request;
+        Stream << request << OpcUa::Binary::flush;
+      }
+
     private:
       mutable StreamType Stream;
       NodeID AuthenticationToken;
