@@ -43,6 +43,13 @@ namespace OpcUa
         Stream >> response;
         return response.Data;
       }
+      
+      virtual std::vector<StatusCode> DeleteSubscriptions(const std::vector<IntegerID> subscriptions)
+      {
+        //FIXME: implement _:-)
+        return std::vector<StatusCode>();
+      }
+ 
 
       virtual MonitoredItemsData CreateMonitoredItems(const MonitoredItemsParameters& parameters)
       {
