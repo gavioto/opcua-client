@@ -69,6 +69,12 @@ namespace
        return size;
      }
 
+    virtual int WaitForData(float second)
+    {
+      //FIXME implement if necessary
+      return 1;
+    }
+
      void Reset()
      {
        Pos = 0;
@@ -140,6 +146,12 @@ namespace
         ReceiveNewData();
       }
       return totalReceived;
+    }
+
+    virtual int WaitForData(float second)
+    {
+      //FIXME implement if necessary
+      return 1;
     }
 
     virtual void Send(const char* message, std::size_t size)
