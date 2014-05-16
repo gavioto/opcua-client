@@ -20,8 +20,9 @@
 
 #pragma once
 
-#include <opc/common/addons_core/addon_manager.h>
 #include <opc/ua/node.h>
+#include <opc/ua/server.h>
+#include <opc/ua/client/remote_server.h>
 
 
 namespace OpcUa
@@ -29,9 +30,9 @@ namespace OpcUa
   class RemoteClient
   {
   public:
-    RemoteClient();
-    explicit RemoteClient(const std::string& endpoint);
-    ~RemoteClient();
+    RemoteClient() {}
+    explicit RemoteClient(const std::string& endpoint) : Endpoint(endpoint) {}
+    ~RemoteClient() {}
 
     RemoteClient(const RemoteClient&&) = delete;
     RemoteClient(const RemoteClient&) = delete;
@@ -64,8 +65,9 @@ namespace OpcUa
     std::string SecurityPolicy = "none";
 
   protected:
-    OpcUa::Remote::Server::SharedPtr Server;
-    Common::AddonsManager::UniquePtr addons;
+    //OpcUa::Remote::Server::SharedPtr Server;
+    //Common::AddonsManager::UniquePtr addons;
+    std::shared_ptr<Remote::Server> Server;
 
   };
 

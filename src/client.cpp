@@ -17,11 +17,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.              *
  ******************************************************************************/
 
+#include <opc/ua/client/remote_server.h>
 
 #include <opc/ua/client/addon.h>
 #include <opc/ua/client/client.h>
-#include <opc/common/addons_core/config_file.h>
-#include <opc/common/application.h>
+//#include <opc/common/addons_core/config_file.h>
 #include <opc/ua/node.h>
 #include <opc/common/uri_facade.h>
 #include <opc/ua/server.h>
@@ -29,33 +29,10 @@
 
 namespace OpcUa
 {
-  RemoteClient::RemoteClient()
-  {
-  }
-
-  RemoteClient::RemoteClient(const std::string& endpoint)
-    : Endpoint(endpoint)
-  {
-    Connect();
-  }
-
-  RemoteClient::~RemoteClient()
-  {
-  }
-  /*
-    try
-    {
-      Disconnect();
-    }
-    catch(const std::exception& exc)
-    {
-      std::cerr << exc.what() << std::endl;
-    }
-  }
-  */
 
   void RemoteClient::Connect()
   {
+    /*
     //Load condfiguration
     //const std::string configDir = configPath;
     //const Common::ModulesConfiguration& configuration = Common::ParseConfigurationFiles(configDir);
@@ -83,6 +60,10 @@ namespace OpcUa
     const Common::Uri uri(Endpoint);
     const OpcUa::Client::Addon::SharedPtr addon = addons->GetAddon<OpcUa::Client::Addon>(uri.Scheme());
     Server = addon->Connect(Endpoint);
+    */
+
+    Server = OpcUa::Remote::SharedConnect(Endpoint);
+
 
     OpcUa::Remote::SessionParameters session;
     session.ClientDescription.URI = Uri;
@@ -101,8 +82,6 @@ namespace OpcUa
   {
     std::clog << "closing session" << std::endl;
     Server->CloseSession();
-    Server.reset();
-    addons->Stop();
     std::clog << "finished" << std::endl;
   }
 

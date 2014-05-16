@@ -106,3 +106,8 @@ std::unique_ptr<OpcUa::Remote::Server> OpcUa::Remote::Connect(const std::string&
   return std::unique_ptr<OpcUa::Remote::Server>(new UaServer(url));
 }
 
+std::shared_ptr<OpcUa::Remote::Server> OpcUa::Remote::SharedConnect(const std::string& url)
+{
+  return std::shared_ptr<OpcUa::Remote::Server>(new UaServer(url));
+}
+

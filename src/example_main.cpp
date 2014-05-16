@@ -25,6 +25,7 @@ int main(int argc, char** argv)
       std::cout << "Connecting to" << endpoint << std::endl;
       OpcUa::RemoteClient clt(endpoint);
       std::cout <<  "Endpoints is" << clt.GetEndpoint() << std::endl;
+      clt.Connect();
 
       OpcUa::Node root = clt.GetRoot();
       std::cout << "Root node is: " << root << std::endl;
