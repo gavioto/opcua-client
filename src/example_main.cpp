@@ -20,11 +20,11 @@ int main(int argc, char** argv)
 {
   try
   {
-      //clt.connect("opc.tcp://192.168.56.101:48030");
+      //std::string endpoint = "opc.tcp://192.168.56.101:48030";
       std::string endpoint = "opc.tcp://127.0.0.1:4841";
-      std::cout << "Connecting to" << endpoint << std::endl;
+
+      std::cout << "Connecting to: " << endpoint << std::endl;
       OpcUa::RemoteClient clt(endpoint);
-      std::cout <<  "Endpoints is" << clt.GetEndpoint() << std::endl;
       clt.Connect();
 
       OpcUa::Node root = clt.GetRoot();

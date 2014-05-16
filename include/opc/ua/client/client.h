@@ -27,6 +27,14 @@
 
 namespace OpcUa
 {
+
+  class NotConnectedError : public std::runtime_error 
+  {
+    public:
+      NotConnectedError() : std::runtime_error("NotConnectedError") { }
+  };
+
+
   class RemoteClient
   {
   public:
