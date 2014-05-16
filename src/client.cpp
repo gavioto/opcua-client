@@ -20,7 +20,6 @@
 
 #include <opc/ua/client/addon.h>
 #include <opc/ua/client/client.h>
-#include <opc/common/addons_core/addon_manager.h>
 #include <opc/common/addons_core/config_file.h>
 #include <opc/common/application.h>
 #include <opc/ua/node.h>
@@ -32,7 +31,6 @@ namespace OpcUa
 {
   RemoteClient::RemoteClient()
   {
-    Connect();
   }
 
   RemoteClient::RemoteClient(const std::string& endpoint)
@@ -43,6 +41,8 @@ namespace OpcUa
 
   RemoteClient::~RemoteClient()
   {
+  }
+  /*
     try
     {
       Disconnect();
@@ -52,6 +52,7 @@ namespace OpcUa
       std::cerr << exc.what() << std::endl;
     }
   }
+  */
 
   void RemoteClient::Connect()
   {
@@ -66,13 +67,21 @@ namespace OpcUa
     configuration.push_back(moduleConfig);
     moduleConfig.Path = "libopc_tcp_client.so";
     //Now start application
-    Application = OpcUa::CreateApplication();
+    addons = Common::CreateAddonsManager();
+    std::cout << "addon manager created" << std::endl;
     std::vector<Common::AddonInformation> infos(configuration.size());
     std::transform(configuration.begin(), configuration.end(), infos.begin(), std::bind(&Common::GetAddonInfomation, std::placeholders::_1));
-    Application->Start(infos);
+    for (const Common::AddonInformation& config : infos)
+    {
+      std::cout << "register config" << std::endl;
+      addons->Register(config);
+    }
+    std::cout << "client addon registered" << std::endl;
+    addons->Start();
+    std::cout << "client addon started" << std::endl;
 
     const Common::Uri uri(Endpoint);
-    const OpcUa::Client::Addon::SharedPtr addon = Application->GetAddonsManager().GetAddon<OpcUa::Client::Addon>(uri.Scheme());
+    const OpcUa::Client::Addon::SharedPtr addon = addons->GetAddon<OpcUa::Client::Addon>(uri.Scheme());
     Server = addon->Connect(Endpoint);
 
     OpcUa::Remote::SessionParameters session;
@@ -93,7 +102,7 @@ namespace OpcUa
     std::clog << "closing session" << std::endl;
     Server->CloseSession();
     Server.reset();
-    Application->Stop();
+    addons->Stop();
     std::clog << "finished" << std::endl;
   }
 

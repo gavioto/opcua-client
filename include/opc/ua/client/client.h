@@ -20,8 +20,7 @@
 
 #pragma once
 
-//#include <opc/ua/client/addon.h>
-#include <opc/common/application.h>
+#include <opc/common/addons_core/addon_manager.h>
 #include <opc/ua/node.h>
 
 
@@ -60,13 +59,13 @@ namespace OpcUa
   private:
     std::string Endpoint = "opc.tcp:://localhost:4841";
     std::string SessionName = "Open source OPC-UA Client Session";
-    std::string Uri = "https://github.com/treww/opc_layer.git";
+    std::string Uri = "https://freeopcua.github.io/opcua-client";
     std::string ConfigPath=".";
     std::string SecurityPolicy = "none";
 
   protected:
     OpcUa::Remote::Server::SharedPtr Server;
-    OpcUa::Application::UniquePtr Application;
+    Common::AddonsManager::UniquePtr addons;
 
   };
 
