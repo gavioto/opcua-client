@@ -31,7 +31,7 @@ namespace OpcUa
 
   void RemoteClient::Connect()
   {
-    Server = OpcUa::Remote::SharedConnect(Endpoint);
+    Server = OpcUa::Remote::Connect(Endpoint);
 
     OpcUa::Remote::SessionParameters session;
     session.ClientDescription.URI = Uri;
