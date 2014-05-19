@@ -42,15 +42,26 @@ namespace OpcUa
     public:
       virtual void AddAttribute(const NodeID& node, AttributeID attribute, const Variant& value)
       {
-        // TODO implement
-        throw std::runtime_error("not implemented.");
+        // FIXME: remove
       }
 
       virtual void AddReference(const NodeID& sourceNode, const ReferenceDescription& reference)
       {
+        // FIXME: remove
+      }
+
+      virtual std::vector<AddNodesResult> AddNodes(const std::vector<AddNodesItem>& items)
+      {
         // TODO implement
         throw std::runtime_error("not implemented.");
       }
+
+      virtual std::vector<StatusCode> AddReferences(const std::vector<AddReferencesItem>& items)
+      {
+        // TODO implement
+        throw std::runtime_error("not implemented.");
+      }
+
 
     private:
       StreamType Stream;
