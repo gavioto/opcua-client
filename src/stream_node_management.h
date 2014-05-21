@@ -20,6 +20,7 @@
 #pragma once
 
 #include <opc/ua/node_management.h>
+#include <opc/ua/protocol/binary/stream.h>
 
 #include <stdexcept>
 
@@ -42,24 +43,40 @@ namespace OpcUa
     public:
       virtual void AddAttribute(const NodeID& node, AttributeID attribute, const Variant& value)
       {
-        // FIXME: remove
+        throw std::runtime_error("Deprecated method");
       }
 
       virtual void AddReference(const NodeID& sourceNode, const ReferenceDescription& reference)
       {
-        // FIXME: remove
+        throw std::runtime_error("Deprecated method");
       }
 
       virtual std::vector<AddNodesResult> AddNodes(const std::vector<AddNodesItem>& items)
       {
-        // TODO implement
-        throw std::runtime_error("not implemented.");
+        AddNodesRequest request;
+        request.Header.SessionAuthenticationToken = AuthenticationToken;
+        request.Parameters.NodesToAdd = items;
+        
+        Stream << request << OpcUa::Binary::flush;
+        
+        AddNodesResponse response;
+        Stream >> response;
+        
+        return response.results;
       }
 
       virtual std::vector<StatusCode> AddReferences(const std::vector<AddReferencesItem>& items)
       {
-        // TODO implement
-        throw std::runtime_error("not implemented.");
+        AddReferencesRequest request;
+        request.Header.SessionAuthenticationToken = AuthenticationToken;
+        request.Parameters.ReferencesToAdd = items;
+        
+        Stream << request << OpcUa::Binary::flush;
+        
+        AddReferencesResponse response;
+        Stream >> response;
+        
+        return response.Results;
       }
 
 
