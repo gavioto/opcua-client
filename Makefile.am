@@ -61,6 +61,7 @@ example_SOURCES = \
   src/example_main.cpp
 
 example_CPPFLAGS =  $(COMMON_INCLUDES)
+example_LDADD = libopc_tcp_client.la
 example_LDFLAGS =  $(UAMAPPINGS_LIBS) $(OPC_CORE_LIBS) -ldl -lpthread -lxml2
 
 #TESTS = libuaclient_test

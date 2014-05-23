@@ -130,7 +130,7 @@ PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
 am_example_OBJECTS = example-client.$(OBJEXT) \
 	example-example_main.$(OBJEXT)
 example_OBJECTS = $(am_example_OBJECTS)
-example_LDADD = $(LDADD)
+example_DEPENDENCIES = libopc_tcp_client.la
 example_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(example_LDFLAGS) $(LDFLAGS) -o $@
@@ -367,6 +367,7 @@ example_SOURCES = \
   src/example_main.cpp
 
 example_CPPFLAGS = $(COMMON_INCLUDES)
+example_LDADD = libopc_tcp_client.la
 example_LDFLAGS = $(UAMAPPINGS_LIBS) $(OPC_CORE_LIBS) -ldl -lpthread -lxml2
 
 #TESTS = libuaclient_test

@@ -69,12 +69,6 @@ namespace
        return size;
      }
 
-    virtual int WaitForData(float second)
-    {
-      //FIXME implement if necessary
-      return 1;
-    }
-
      void Reset()
      {
        Pos = 0;
