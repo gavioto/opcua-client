@@ -8,6 +8,8 @@
 /// http://www.gnu.org/licenses/lgpl.html)
 ///
 
+#include "errors.h"
+
 #include <opc/ua/protocol/binary/secure_connection.h>
 #include <opc/ua/protocol/binary/stream.h>
 #include <opc/ua/protocol/secure_channel.h>
@@ -141,13 +143,13 @@ namespace
       }
       return totalReceived;
     }
-
+/*
     virtual int WaitForData(float second)
     {
       //FIXME implement if necessary
       return 1;
     }
-
+*/
     virtual void Send(const char* message, std::size_t size)
     {
       // TODO add support for breaking message into multiple chunks
@@ -179,13 +181,13 @@ namespace
       SequenceHeader responseSequence;
       in >> responseSequence; // TODO Check for request Number
 
-      const std::size_t headerSize = RawSize(responseHeader) + RawSize(responseAlgo) + RawSize(responseSequence);
-      if (headerSize >= responseHeader.Size)
+      const std::size_t expectedHeaderSize = RawSize(responseHeader) + RawSize(responseAlgo) + RawSize(responseSequence);
+      if (expectedHeaderSize >= responseHeader.Size)
       {
-        throw std::logic_error("It was received message with invalid data size.");
+        THROW_ERROR2(SizeOfReceivedMessageInvalid, expectedHeaderSize, responseHeader.Size);
       }
 
-      const std::size_t dataSize = responseHeader.Size - headerSize;
+      const std::size_t dataSize = responseHeader.Size - expectedHeaderSize;
       Buffer.resize(dataSize);
       RawBuffer raw(&Buffer[0], dataSize);
       in >> raw;

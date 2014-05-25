@@ -9,6 +9,7 @@
 ///
 
 #include <opc/ua/client/remote_connection.h>
+#include <opc/ua/errors.h>
 #include <opc/ua/socket_channel.h>
 
 #include <arpa/inet.h>
@@ -29,7 +30,7 @@ namespace
     hostent* host = gethostbyname(hostName.c_str());
     if (!host)
     {
-      throw std::logic_error("unable to resolve host '" + hostName + std::string("'. ") + strerror(errno));
+      THROW_OS_ERROR("Unable to to resolve host '" + hostName + "'.");
     }
     return *(unsigned long*)host->h_addr_list[0];
   }
@@ -39,7 +40,7 @@ namespace
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0)
     {
-      throw std::logic_error(std::string("unable to create socket for connecting to the host '" + host + std::string("':") + strerror(errno)) + std::string("."));
+      THROW_OS_ERROR("Unable to create socket for connecting to the host '" + host + ".");
     }
 
     sockaddr_in addr = {0};
@@ -50,7 +51,7 @@ namespace
     int error = connect(sock, (sockaddr*)& addr, sizeof(addr));
     if (error < 0)
     {
-      throw std::logic_error(std::string("Unable connect to host '") + host + std::string("'. ") + strerror(errno) + std::string("."));
+      THROW_OS_ERROR(std::string("Unable connect to host '") + host + std::string("'. "));
     }
     return sock;
   }
@@ -74,11 +75,12 @@ namespace
       return Channel.Receive(data, size);
     }
 
+/*
     virtual int WaitForData(float second)
     {
       return Channel.WaitForData(second);
     }
-
+*/
     virtual void Send(const char* message, std::size_t size)
     {
       return Channel.Send(message, size);

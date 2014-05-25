@@ -121,13 +121,14 @@ am_libopc_tcp_client_la_OBJECTS = libopc_tcp_client_la-computer.lo \
 	libopc_tcp_client_la-binary_computer_addon.lo \
 	libopc_tcp_client_la-binary_computer.lo \
 	libopc_tcp_client_la-binary_connection.lo \
-	libopc_tcp_client_la-binary_secure_channel.lo
+	libopc_tcp_client_la-binary_secure_channel.lo \
+	libopc_tcp_client_la-errors.lo
 libopc_tcp_client_la_OBJECTS = $(am_libopc_tcp_client_la_OBJECTS)
 libopc_tcp_client_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(libopc_tcp_client_la_LDFLAGS) $(LDFLAGS) -o $@
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
-am_example_OBJECTS = example-client.$(OBJEXT) \
+am_example_OBJECTS = example-errors.$(OBJEXT) example-client.$(OBJEXT) \
 	example-example_main.$(OBJEXT)
 example_OBJECTS = $(am_example_OBJECTS)
 example_DEPENDENCIES = libopc_tcp_client.la
@@ -348,6 +349,7 @@ libopc_tcp_client_la_SOURCES = \
   src/binary_connection.cpp \
   src/binary_secure_channel.cpp \
   src/endpoints.h \
+  src/errors.cpp \
   src/stream_attribute.h \
   src/stream_server.h \
   src/stream_subscription.h \
@@ -363,6 +365,7 @@ opcua_SOURCES = \
 opcua_CPPFLAGS = $(COMMON_INCLUDES)
 opcua_LDFLAGS = $(UAMAPPINGS_LIBS) $(OPC_CORE_LIBS) -ldl -lboost_program_options -lpthread -lxml2
 example_SOURCES = \
+  src/errors.cpp \
   src/client.cpp \
   src/example_main.cpp
 
@@ -555,12 +558,14 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/example-client.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/example-errors.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/example-example_main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopc_tcp_client_la-binary_computer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopc_tcp_client_la-binary_computer_addon.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopc_tcp_client_la-binary_connection.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopc_tcp_client_la-binary_secure_channel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopc_tcp_client_la-computer.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libopc_tcp_client_la-errors.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/opcua-opcua_main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/opcua-opcua_options.Po@am__quote@
 
@@ -619,6 +624,27 @@ libopc_tcp_client_la-binary_secure_channel.lo: src/binary_secure_channel.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/binary_secure_channel.cpp' object='libopc_tcp_client_la-binary_secure_channel.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopc_tcp_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libopc_tcp_client_la-binary_secure_channel.lo `test -f 'src/binary_secure_channel.cpp' || echo '$(srcdir)/'`src/binary_secure_channel.cpp
+
+libopc_tcp_client_la-errors.lo: src/errors.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopc_tcp_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libopc_tcp_client_la-errors.lo -MD -MP -MF $(DEPDIR)/libopc_tcp_client_la-errors.Tpo -c -o libopc_tcp_client_la-errors.lo `test -f 'src/errors.cpp' || echo '$(srcdir)/'`src/errors.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libopc_tcp_client_la-errors.Tpo $(DEPDIR)/libopc_tcp_client_la-errors.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/errors.cpp' object='libopc_tcp_client_la-errors.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libopc_tcp_client_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libopc_tcp_client_la-errors.lo `test -f 'src/errors.cpp' || echo '$(srcdir)/'`src/errors.cpp
+
+example-errors.o: src/errors.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(example_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT example-errors.o -MD -MP -MF $(DEPDIR)/example-errors.Tpo -c -o example-errors.o `test -f 'src/errors.cpp' || echo '$(srcdir)/'`src/errors.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/example-errors.Tpo $(DEPDIR)/example-errors.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/errors.cpp' object='example-errors.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(example_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o example-errors.o `test -f 'src/errors.cpp' || echo '$(srcdir)/'`src/errors.cpp
+
+example-errors.obj: src/errors.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(example_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT example-errors.obj -MD -MP -MF $(DEPDIR)/example-errors.Tpo -c -o example-errors.obj `if test -f 'src/errors.cpp'; then $(CYGPATH_W) 'src/errors.cpp'; else $(CYGPATH_W) '$(srcdir)/src/errors.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/example-errors.Tpo $(DEPDIR)/example-errors.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/errors.cpp' object='example-errors.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(example_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o example-errors.obj `if test -f 'src/errors.cpp'; then $(CYGPATH_W) 'src/errors.cpp'; else $(CYGPATH_W) '$(srcdir)/src/errors.cpp'; fi`
 
 example-client.o: src/client.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(example_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT example-client.o -MD -MP -MF $(DEPDIR)/example-client.Tpo -c -o example-client.o `test -f 'src/client.cpp' || echo '$(srcdir)/'`src/client.cpp
