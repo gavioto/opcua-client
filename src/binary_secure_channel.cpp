@@ -57,18 +57,24 @@ namespace
      {
        Reset();
      }
-     
+
      virtual std::size_t Receive(char* data, std::size_t size)
      {
        if (Pos >= Buffer.size())
        {
          return 0;
        }
-       
+
        size = std::min(size, Buffer.size() - Pos);
        std::copy(&Buffer[Pos], &Buffer[Pos + size], data);
        Pos += size;
        return size;
+     }
+
+     virtual int WaitForData(float second)
+     {
+       //FIXME implement if necessary
+       return 1;
      }
 
      void Reset()
@@ -143,13 +149,13 @@ namespace
       }
       return totalReceived;
     }
-/*
+
     virtual int WaitForData(float second)
     {
       //FIXME implement if necessary
       return 1;
     }
-*/
+
     virtual void Send(const char* message, std::size_t size)
     {
       // TODO add support for breaking message into multiple chunks
