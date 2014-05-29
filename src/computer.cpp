@@ -101,7 +101,7 @@ namespace
 
 }
 
-std::unique_ptr<OpcUa::Remote::Server> OpcUa::Remote::Connect(const std::string& url)
+OpcUa::Remote::Server::UniquePtr OpcUa::Remote::Connect(const std::string& url)
 {
   return std::unique_ptr<OpcUa::Remote::Server>(new UaServer(url));
 }

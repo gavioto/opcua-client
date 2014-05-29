@@ -37,6 +37,7 @@ libopc_tcp_client_la_SOURCES = \
   src/binary_connection.cpp \
   src/binary_secure_channel.cpp \
   src/endpoints.h \
+  src/errors.cpp \
   src/stream_attribute.h \
   src/stream_server.h \
   src/stream_subscription.h \
@@ -57,10 +58,12 @@ opcua_LDFLAGS =  $(UAMAPPINGS_LIBS) $(OPC_CORE_LIBS) -ldl -lboost_program_option
 
 noinst_PROGRAMS = example
 example_SOURCES = \
+  src/errors.cpp \
   src/client.cpp \
   src/example_main.cpp
 
 example_CPPFLAGS =  $(COMMON_INCLUDES)
+example_LDADD = libopc_tcp_client.la
 example_LDFLAGS =  $(UAMAPPINGS_LIBS) $(OPC_CORE_LIBS) -ldl -lpthread -lxml2
 
 #TESTS = libuaclient_test
